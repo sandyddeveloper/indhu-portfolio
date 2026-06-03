@@ -1,64 +1,564 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import CaseStudyExplorer from "./components/CaseStudyExplorer";
+import BpmnViewer from "./components/BpmnViewer";
+import DeliverablesViewer from "./components/DeliverablesViewer";
+import InteractiveSqlSandbox from "./components/InteractiveSqlSandbox";
+import DashboardSimulator from "./components/DashboardSimulator";
+import TestimonialsCarousel from "./components/TestimonialsCarousel";
+import ContactForm from "./components/ContactForm";
 
 export default function Home() {
+  const [activeSection, setActiveSection] = useState("summary");
+  const [theme, setTheme] = useState<"dark" | "light">("dark");
+
+  // Load theme from localStorage or system preference on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as "dark" | "light";
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setTheme("dark");
+    } else {
+      setTheme("light");
+    }
+  }, []);
+
+  // Sync theme class to documentElement
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
+  const navItems = [
+    { id: "summary", label: "Professional Summary" },
+    { id: "competencies", label: "Core Competencies" },
+    { id: "experience", label: "Work Experience" },
+    { id: "case-studies", label: "Case Studies" },
+    { id: "bpmn-analysis", label: "Process Flow (BPMN)" },
+    { id: "deliverables", label: "Sample Deliverables" },
+    { id: "data-showcase", label: "Data & BI Showcase" },
+    { id: "certifications", label: "Certifications" },
+    { id: "testimonials", label: "Testimonials" },
+    { id: "contact", label: "Contact Inquiries" }
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen grid-bg relative flex flex-col xl:flex-row bg-background text-foreground transition-colors duration-300">
+      
+      {/* Sticky Left Sidebar Navigation (Desktop) */}
+      <aside className="xl:w-80 w-full xl:h-screen xl:sticky xl:top-0 bg-sidebar-bg/90 xl:border-r border-b xl:border-b-0 border-sidebar-border p-6 flex flex-col justify-between shrink-0 z-50 backdrop-blur-md transition-all duration-300">
+        <div className="space-y-8">
+          {/* Logo / Profile Brief */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-indigo-500/20">
+                  I
+                </div>
+                <div>
+                  <h1 className="text-base font-bold text-foreground tracking-tight">Indhu</h1>
+                  <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Lead Business Analyst</p>
+                </div>
+              </div>
+              
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl bg-bg-hover text-text-muted hover:text-foreground transition-colors border border-sidebar-border"
+                aria-label="Toggle Theme"
+              >
+                {theme === "dark" ? (
+                  // Sun Icon
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707m12.828 5.657a8 8 0 11-16 0 8 8 0 0116 0z" />
+                  </svg>
+                ) : (
+                  // Moon Icon
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            
+            <p className="text-[11px] text-text-muted leading-relaxed">
+              Bridging business strategies with technological solutions using process modeling, data analytics, and Agile requirements.
+            </p>
+          </div>
+
+          {/* Navigation Items */}
+          <nav className="hidden xl:flex flex-col gap-1">
+            {navItems.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={() => setActiveSection(item.id)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2.5 ${
+                  activeSection === item.id
+                    ? "bg-indigo-600/10 text-accent-primary border-l-2 border-accent-primary"
+                    : "text-text-muted hover:text-foreground hover:bg-bg-hover"
+                }`}
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${activeSection === item.id ? "bg-accent-primary" : "bg-slate-400 dark:bg-slate-600"}`} />
+                {item.label}
+              </a>
+            ))}
+          </nav>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+
+        {/* Sidebar Footer */}
+        <div className="hidden xl:flex flex-col gap-4 border-t border-sidebar-border pt-6">
+          <div className="flex gap-3">
+            <a
+              href="https://linkedin.com/in/indhuba"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-text-muted hover:text-accent-primary transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+              </svg>
+            </a>
+            <a
+              href="mailto:indhu.ba.analyst@example.com"
+              className="text-text-muted hover:text-accent-primary transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 00-2 2z" />
+              </svg>
+            </a>
+          </div>
+          <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
+            © 2026 Indhu Portfolio
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Scrollable Canvas */}
+      <main className="flex-grow p-6 md:p-12 xl:p-16 max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] w-full mx-auto space-y-24 overflow-y-auto pb-32 xl:pb-16">
+        
+        {/* SECTION 1: HERO & SUMMARY */}
+        <section id="summary" className="space-y-8 pt-4">
+          <div className="space-y-4">
+            <div className="inline-block bg-indigo-500/10 text-accent-primary text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-500/20 uppercase tracking-widest">
+              Available for Full-time Roles & Consulting
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-tight max-w-4xl">
+              Driving efficiency through <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-400 dark:from-indigo-400 dark:to-indigo-200">strategic analysis</span> and structured data.
+            </h2>
+          </div>
+
+          {/* Professional Summary */}
+          <div className="border-l-4 border-indigo-600 pl-6 max-w-3xl space-y-2">
+            <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic">
+              "Result-driven Senior Business Analyst with 5+ years of experience specializing in digital transformations, business process modeling (BPMN), and Agile requirements lifecycle management. Proven track record of translating complex business requirements into high-fidelity technical specs (BRDs, User Stories) while building interactive BI dashboards to optimize operations and drive stakeholder decisions."
+            </p>
+          </div>
+
+          {/* Quick Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 max-w-5xl">
+            <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="text-3xl font-black text-accent-primary">5+ Yrs</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Domain Experience</div>
+            </div>
+            <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="text-3xl font-black text-accent-primary">85%</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Process Wait reduction</div>
+            </div>
+            <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="text-3xl font-black text-accent-primary">$430k</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Capital unlocked</div>
+            </div>
+            <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="text-3xl font-black text-accent-primary">100%</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Jira Story approval</div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 2: CORE COMPETENCIES */}
+        <section id="competencies" className="space-y-6">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Skill Set</span>
+            <h3 className="text-2xl font-bold text-foreground">Core Competencies</h3>
+            <p className="text-xs text-text-muted">The tooling, methodologies, and framework capabilities I apply to deliver business value.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl">
+            {/* Box 1 */}
+            <div className="bg-card-bg border border-card-border p-6 rounded-2xl hover:border-indigo-500/20 transition-all glow-indigo">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-accent-primary mb-4">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                </svg>
+              </div>
+              <h4 className="text-sm font-bold text-foreground mb-2">Requirements & Analysis</h4>
+              <p className="text-xs text-text-muted leading-relaxed mb-4">
+                Specialized in mapping business operations to technical design, eliciting requirements, and formulating BRDs/FRDs.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {["Gap Analysis", "AS-IS & TO-BE", "BRD/FRD", "BPMN 2.0", "Use Cases"].map((tag) => (
+                  <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Box 2 */}
+            <div className="bg-card-bg border border-card-border p-6 rounded-2xl hover:border-indigo-500/20 transition-all glow-indigo">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-accent-primary mb-4">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+              </div>
+              <h4 className="text-sm font-bold text-foreground mb-2">Data & Dashboard Engineering</h4>
+              <p className="text-xs text-text-muted leading-relaxed mb-4">
+                Writing robust SQL queries to audit workflows, cleaning inventory datasets in Excel, and visualizing trends in Power BI/Tableau.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {["PostgreSQL", "Power BI", "MS Excel", "DAX", "Tableau", "SQL Sandbox"].map((tag) => (
+                  <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* Box 3 */}
+            <div className="bg-card-bg border border-card-border p-6 rounded-2xl hover:border-indigo-500/20 transition-all glow-indigo">
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-accent-primary mb-4">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <h4 className="text-sm font-bold text-foreground mb-2">Agile Delivery & Scrum</h4>
+              <p className="text-xs text-text-muted leading-relaxed mb-4">
+                Facilitating Scrum iterations, writing user stories, managing Jira boards, and leading UAT exception tests.
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {["Scrum Framework", "Jira", "Confluence", "User Stories", "UAT Testing"].map((tag) => (
+                  <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3: WORK EXPERIENCE */}
+        <section id="experience" className="space-y-6">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Chronology</span>
+            <h3 className="text-2xl font-bold text-foreground">Work Experience</h3>
+            <p className="text-xs text-text-muted">Chronological summary of my roles delivering solutions across domains.</p>
+          </div>
+
+          <div className="relative border-l border-card-border pl-6 space-y-10 max-w-4xl">
+            {/* Experience Item 1 */}
+            <div className="relative space-y-2">
+              <span className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full bg-indigo-600 border-2 border-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-white" />
+              </span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                  <h4 className="text-base font-bold text-foreground">Lead Business Analyst</h4>
+                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">CareFirst Health Network | Full-time</p>
+                </div>
+                <span className="text-xs text-accent-primary font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+                  2024 - Present
+                </span>
+              </div>
+              <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
+                <p>
+                  <strong>Role Objective:</strong> Direct operational efficiency redesigns for outpatient networks, focusing on medical billing operations, registration front-ends, and API clearance engines.
+                </p>
+                <ul className="list-disc pl-4 space-y-1 text-text-muted">
+                  <li>Formulated AS-IS/TO-BE process mappings (BPMN), reducing patient check-in bottlenecks by 85%.</li>
+                  <li>Authored 45+ Jira user stories with Given-When-Then criteria, ensuring zero sprint backlogs due to specifications.</li>
+                  <li>Managed clearinghouse integrations, reducing claims registration entry errors by 92%.</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Experience Item 2 */}
+            <div className="relative space-y-2">
+              <span className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+              </span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                  <h4 className="text-base font-bold text-foreground">Senior Business & Data Analyst</h4>
+                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">Apex Logistics Solutions | Full-time</p>
+                </div>
+                <span className="text-xs text-text-muted font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-bg-hover border border-card-border">
+                  2022 - 2024
+                </span>
+              </div>
+              <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
+                <p>
+                  <strong>Role Objective:</strong> Audit supply-chain inventories and optimize safety stock thresholds to minimize retail inventory costs.
+                </p>
+                <ul className="list-disc pl-4 space-y-1 text-text-muted">
+                  <li>Queried Postgres databases via SQL to diagnose vendor lead time anomalies, freeing up $430,000 in working capital.</li>
+                  <li>Built interactive inventory dashboards in Power BI, connected to live ERP SQL feeds for buyers.</li>
+                  <li>Facilitated stakeholder elicitation workshops to gather specifications for warehouse management migrations.</li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Experience Item 3 */}
+            <div className="relative space-y-2">
+              <span className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-background flex items-center justify-center">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
+              </span>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div>
+                  <h4 className="text-base font-bold text-foreground">Systems / Business Analyst</h4>
+                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">MedTech Integrations Group | Full-time</p>
+                </div>
+                <span className="text-xs text-text-muted font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-bg-hover border border-card-border">
+                  2020 - 2022
+                </span>
+              </div>
+              <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
+                <p>
+                  <strong>Role Objective:</strong> Partner with software engineering squads to deploy SaaS patient portals and medical telemetry components.
+                </p>
+                <ul className="list-disc pl-4 space-y-1 text-text-muted">
+                  <li>Authored detailed Functional Requirements Documents (FRDs) and System Interface Specifications.</li>
+                  <li>Drafted wireframe user flows in Balsamiq, streamlining patient onboarding screens.</li>
+                  <li>Executed User Acceptance Testing (UAT) scripts, maintaining an SLA of &lt;1% critical production defects.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4: CASE STUDIES */}
+        <section id="case-studies" className="space-y-6">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Deep Dives</span>
+            <h3 className="text-2xl font-bold text-foreground">Case Studies</h3>
+            <p className="text-xs text-text-muted">Comprehensive walk-through of the end-to-end BA lifecycle for major corporate projects.</p>
+          </div>
+          <CaseStudyExplorer />
+        </section>
+
+        {/* SECTION 5: BPMN PROCESS MAPPING */}
+        <section id="bpmn-analysis" className="space-y-6">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Modeling</span>
+            <h3 className="text-2xl font-bold text-foreground">Process Flow Gap Analysis</h3>
+            <p className="text-xs text-text-muted">Interactive workflow diagram showcasing operational re-engineering of clinical intake pipelines.</p>
+          </div>
+          <BpmnViewer />
+        </section>
+
+        {/* SECTION 6: SAMPLE DELIVERABLES */}
+        <section id="deliverables" className="space-y-6">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Artifacts</span>
+            <h3 className="text-2xl font-bold text-foreground">Sample Deliverables Showcase</h3>
+            <p className="text-xs text-text-muted">High-fidelity mocks of functional requirements, scrum backlogs, and portal wireframes.</p>
+          </div>
+          <DeliverablesViewer />
+        </section>
+
+        {/* SECTION 7: DATA & BI SHOWCASE */}
+        <section id="data-showcase" className="space-y-10">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Data Analysis</span>
+            <h3 className="text-2xl font-bold text-foreground">SQL Playground & BI Dashboard</h3>
+            <p className="text-xs text-text-muted">Demonstrating data elicitation, database querying, and dashboard design skills.</p>
+          </div>
+
+          <div className="space-y-8">
+            <InteractiveSqlSandbox />
+            <DashboardSimulator />
+          </div>
+        </section>
+
+        {/* SECTION 8: CERTIFICATIONS & EDUCATION */}
+        <section id="certifications" className="space-y-6">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Credentials</span>
+            <h3 className="text-2xl font-bold text-foreground">Certifications & Education</h3>
+            <p className="text-xs text-text-muted">Professional credentials confirming expertise in BA methodologies and data analytics.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
+            {/* Cert 1 */}
+            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-sm shrink-0">
+                CBAP
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Certified Business Analysis Professional (CBAP)</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">International Institute of Business Analysis (IIBA) | ID: 9028103</p>
+              </div>
+            </div>
+
+            {/* Cert 2 */}
+            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-[10px] shrink-0">
+                PMI-PBA
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Professional in Business Analysis (PMI-PBA)</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">Project Management Institute (PMI) | ID: PBA-3829103</p>
+              </div>
+            </div>
+
+            {/* Cert 3 */}
+            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-sm shrink-0">
+                CSM
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Certified ScrumMaster (CSM)</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">Scrum Alliance | ID: CSM-9830219</p>
+              </div>
+            </div>
+
+            {/* Degree */}
+            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-xs shrink-0">
+                B.Sc.
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">B.Sc. in Management Information Systems</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">State University | Honor Graduate</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 9: TESTIMONIALS */}
+        <section id="testimonials" className="space-y-6">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Endorsements</span>
+            <h3 className="text-2xl font-bold text-foreground">Recommendations & Vouching</h3>
+            <p className="text-xs text-text-muted">Short quotes from managers, product owners, and engineering partners.</p>
+          </div>
+          <TestimonialsCarousel />
+        </section>
+
+        {/* SECTION 10: CONTACT */}
+        <section id="contact" className="space-y-6 pb-20">
+          <div className="space-y-1.5">
+            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Send mail</span>
+            <h3 className="text-2xl font-bold text-foreground">Get in Touch</h3>
+            <p className="text-xs text-text-muted">Reach out for recruitment proposals, operational audits, or consulting opportunities.</p>
+          </div>
+          <ContactForm />
+        </section>
+
+        {/* Main Footer Section */}
+        <footer className="border-t border-card-border pt-12 mt-20 pb-8 transition-colors duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            {/* Column 1: Info */}
+            <div className="md:col-span-2 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-base shadow-md">
+                  I
+                </div>
+                <h4 className="text-sm font-bold text-foreground">Indhu | Lead Business Analyst</h4>
+              </div>
+              <p className="text-xs text-text-muted leading-relaxed max-w-sm">
+                Driving organizational maturity and systems efficiency. Translating complex business processes into modular, scalable technical requirements and actionable BI tools.
+              </p>
+            </div>
+
+            {/* Column 2: Navigation Quick Links */}
+            <div className="space-y-3">
+              <h5 className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Navigation</h5>
+              <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
+                <a href="#summary" className="text-text-muted hover:text-foreground transition-colors">Summary</a>
+                <a href="#competencies" className="text-text-muted hover:text-foreground transition-colors">Skills</a>
+                <a href="#experience" className="text-text-muted hover:text-foreground transition-colors">Experience</a>
+                <a href="#case-studies" className="text-text-muted hover:text-foreground transition-colors">Case Studies</a>
+                <a href="#bpmn-analysis" className="text-text-muted hover:text-foreground transition-colors">BPMN Flow</a>
+                <a href="#deliverables" className="text-text-muted hover:text-foreground transition-colors">Deliverables</a>
+                <a href="#data-showcase" className="text-text-muted hover:text-foreground transition-colors">Analytics</a>
+                <a href="#contact" className="text-text-muted hover:text-foreground transition-colors">Contact</a>
+              </div>
+            </div>
+
+            {/* Column 3: Social/Contact Info */}
+            <div className="space-y-3">
+              <h5 className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Connect</h5>
+              <ul className="text-xs text-text-muted space-y-2 font-semibold">
+                <li>
+                  <a href="mailto:indhu.ba.analyst@example.com" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                    indhu.ba.analyst@example.com
+                  </a>
+                </li>
+                <li>
+                  <a href="https://linkedin.com/in/indhuba" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                    linkedin.com/in/indhuba
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/indhu-analyst" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                    github.com/indhu-analyst
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-card-border mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-text-muted font-bold uppercase tracking-wider">
+            <div>
+              © 2026 Indhu Portfolio. All rights reserved.
+            </div>
+            <div>
+              Designed with Next.js & Tailwind CSS
+            </div>
+          </div>
+        </footer>
+
+        {/* Floating Mobile Bottom Navigation Dock */}
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-[480px] bg-sidebar-bg/90 border border-sidebar-border rounded-full p-2.5 flex justify-around items-center shadow-2xl backdrop-blur-md z-50 xl:hidden transition-colors duration-300">
+          <a href="#summary" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span>Home</span>
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
+          <a href="#experience" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span>Work</span>
+          </a>
+          <a href="#case-studies" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span>Cases</span>
+          </a>
+          <a href="#data-showcase" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+            </svg>
+            <span>Data</span>
+          </a>
+          <a href="#contact" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 00-2 2z" />
+            </svg>
+            <span>Contact</span>
           </a>
         </div>
+
       </main>
     </div>
   );
