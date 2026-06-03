@@ -239,7 +239,7 @@ export default function DeliverablesViewer() {
               <div className="text-indigo-600 dark:text-indigo-400 font-bold">DOCUMENT REFERENCE: CLIN-BRD-2025-V2.1</div>
               <div className="text-foreground font-bold text-sm">BUSINESS REQUIREMENTS DOCUMENT (BRD)</div>
               <div className="text-text-muted">Project: Clinic Registration & Insurance Eligibility Automation</div>
-              <div className="text-text-muted">Author: Indhu (Lead Business Analyst)</div>
+              <div className="text-text-muted">Author: Indhu S (Quality Analyst)</div>
             </div>
 
             {/* Section 1 */}

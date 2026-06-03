@@ -13,10 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Indhu | Senior Business Analyst & Data Analytics Portfolio",
-  description: "Senior Business Analyst portfolio demonstrating expertise in requirements gathering, Agile SDLC, data analysis (SQL, Power BI), BPMN process mapping, and stakeholder management.",
-  keywords: ["Business Analyst", "Data Analyst", "Agile", "Scrum", "SQL", "BPMN", "Power BI", "BRD", "User Stories", "Case Studies", "Requirements Gathering"],
-  authors: [{ name: "Indhu" }],
+  title: "Indhu S | Quality & Transaction Analyst Portfolio",
+  description: "Quality Analyst and Financial Transaction Specialist portfolio demonstrating expertise in document validation, compliance audit, US healthcare transactions, and HIPAA standards.",
+  keywords: ["Quality Analyst", "Financial Transaction Analyst", "US Healthcare", "HIPAA Compliance", "Prior Authorization", "Eligibility Verification", "BCA", "SQL", "Document Record Management"],
+  authors: [{ name: "Indhu S" }],
 };
 
 export default function RootLayout({

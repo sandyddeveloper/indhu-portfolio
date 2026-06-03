@@ -13,27 +13,27 @@ interface Testimonial {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    quote: "Indhu's ability to map our convoluted scheduling workflows and propose clean, automated API solutions completely transformed our clinic operations. Her BRDs were flawless, and she was a stellar bridge between our clinical staff and engineering. The 85% wait-time reduction speaks for itself.",
+    quote: "Indhu's precision in validating operational documents and maintaining strict compliance standards was stellar. Her qa checks and detail-oriented approach significantly reduced production error rates before client delivery.",
     author: "Keerthana",
-    role: "VP of Patient Experience",
-    company: "CareFirst Health Network",
-    avatarLetter: "S",
+    role: "QA Delivery Lead",
+    company: "HTC Global Services",
+    avatarLetter: "K",
     rating: 5
   },
   {
-    quote: "Indhu is one of the rare analysts who can look at raw database transaction logs, write clean SQL to diagnose stockout anomalies, and present the solutions in clear, actionable BI dashboards. Her safety-stock reordering formulas unlocked $430k of trapped capital.",
+    quote: "Indhu proved to be an invaluable asset during her internship, auditing complex patient demographics and insurance data. Her grasp of HIPAA guidelines and eligibility validation rules was outstanding, leading to reduced claim rejections.",
     author: "Abinaya",
-    role: "Product Owner",
-    company: "Apex Logistics Solutions",
-    avatarLetter: "D",
+    role: "Operations Manager",
+    company: "S10 Healthcare Solutions",
+    avatarLetter: "A",
     rating: 5
   },
   {
-    quote: "We loved working with Indhu on the Scrum team. Her Jira user stories were exceptionally detailed, with clear Gherkin acceptance criteria that left zero room for developer ambiguity. She facilitated active backlog grooming and made our release cycles incredibly smooth.",
+    quote: "Indhu's academic performance in her BCA degree was exemplary. Her project work in database applications and software validation showcased strong analytical capabilities, showing great promise for her professional analytical career.",
     author: "Santhosh Raj",
-    role: "Lead Software Engineer",
-    company: "MedTech Integrations Group",
-    avatarLetter: "M",
+    role: "Assistant Professor",
+    company: "AM Jain College",
+    avatarLetter: "S",
     rating: 5
   }
 ];

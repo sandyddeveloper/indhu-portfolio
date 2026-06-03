@@ -32,7 +32,7 @@ const CASE_STUDIES: CaseStudy[] = [
     title: "Healthcare Patient Intake & Scheduling Automation",
     category: "Healthcare / Digital Transformation",
     summary: "Redesigned the patient registration lifecycle for a regional clinic network, reducing patient drop-off rates and streamlining operational efficiency.",
-    role: "Lead Business Analyst",
+    role: "Quality Analyst",
     duration: "6 Months",
     impactMetric: "85% intake wait reduction",
     steps: {
@@ -110,7 +110,7 @@ const CASE_STUDIES: CaseStudy[] = [
     title: "E-Commerce Supply Chain & Inventory Optimization",
     category: "Retail / Data Analytics",
     summary: "Built a predictive inventory modeling strategy and enterprise BI dashboard to optimize safety stock and lower inventory carrying costs.",
-    role: "Senior Business / Data Analyst",
+    role: "Transaction & Data Analyst",
     duration: "5 Months",
     impactMetric: "$430k capital unlocked",
     steps: {

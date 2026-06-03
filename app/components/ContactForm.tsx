@@ -34,14 +34,14 @@ export default function ContactForm() {
           <span className="text-[10px] text-indigo-605 dark:text-indigo-400 font-bold uppercase tracking-widest">Connect</span>
           <h4 className="text-xl font-bold text-foreground mt-1">Get in Touch</h4>
           <p className="text-xs text-text-muted leading-relaxed mt-2">
-            Looking to recruit a Senior Business Analyst or consult on operational optimization, process automation, or dashboard designs? Drop a line here!
+            Looking to recruit a Quality Analyst or Transaction Specialist for document validation, HIPAA compliance, or process audits? Drop a line here!
           </p>
         </div>
 
         <div className="space-y-4">
           {/* Email Card */}
           <a
-            href="mailto:indhu.ba.analyst@example.com"
+            href="mailto:indhusekar1609@gmail.com"
             className="flex items-center gap-4 bg-card-bg hover:bg-bg-hover border border-card-border p-4 rounded-xl transition-all group shadow-xs"
           >
             <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-indigo-650 dark:text-indigo-400 group-hover:bg-indigo-650 group-hover:text-white dark:group-hover:bg-indigo-600 transition-colors shrink-0">
@@ -51,13 +51,13 @@ export default function ContactForm() {
             </div>
             <div>
               <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider">Email Address</div>
-              <div className="text-xs font-semibold text-foreground mt-0.5">indhu.ba.analyst@example.com</div>
+              <div className="text-xs font-semibold text-foreground mt-0.5">indhusekar1609@gmail.com</div>
             </div>
           </a>
 
           {/* LinkedIn Card */}
           <a
-            href="https://linkedin.com/in/indhuba"
+            href="https://linkedin.com/in/indhu16"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-4 bg-card-bg hover:bg-bg-hover border border-card-border p-4 rounded-xl transition-all group shadow-xs"
@@ -69,13 +69,13 @@ export default function ContactForm() {
             </div>
             <div>
               <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider">LinkedIn Connect</div>
-              <div className="text-xs font-semibold text-foreground mt-0.5">linkedin.com/in/indhuba</div>
+              <div className="text-xs font-semibold text-foreground mt-0.5">linkedin.com/in/indhu16</div>
             </div>
           </a>
 
           {/* GitHub Card */}
           <a
-            href="https://github.com/indhu-analyst"
+            href="https://github.com/indhusekar1609"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-4 bg-card-bg hover:bg-bg-hover border border-card-border p-4 rounded-xl transition-all group shadow-xs"
@@ -87,7 +87,7 @@ export default function ContactForm() {
             </div>
             <div>
               <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider">GitHub (SQL/Python)</div>
-              <div className="text-xs font-semibold text-foreground mt-0.5">github.com/indhu-analyst</div>
+              <div className="text-xs font-semibold text-foreground mt-0.5">github.com/indhusekar1609</div>
             </div>
           </a>
         </div>

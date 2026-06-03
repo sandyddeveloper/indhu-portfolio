@@ -9,6 +9,19 @@ import DashboardSimulator from "./components/DashboardSimulator";
 import TestimonialsCarousel from "./components/TestimonialsCarousel";
 import ContactForm from "./components/ContactForm";
 
+const navItems = [
+  { id: "summary", label: "Professional Summary" },
+  { id: "competencies", label: "Core Competencies" },
+  { id: "experience", label: "Work Experience" },
+  { id: "case-studies", label: "Case Studies" },
+  { id: "bpmn-analysis", label: "Process Flow (BPMN)" },
+  { id: "deliverables", label: "Sample Deliverables" },
+  { id: "data-showcase", label: "Data & BI Showcase" },
+  { id: "certifications", label: "Certifications" },
+  { id: "testimonials", label: "Testimonials" },
+  { id: "contact", label: "Contact Inquiries" }
+];
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState("summary");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -36,26 +49,44 @@ export default function Home() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  // Highlight active section on scroll using IntersectionObserver
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "-25% 0px -55% 0px", // triggers when section occupies the active scroll window
+      threshold: 0
+    };
+
+    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+
+    navItems.forEach((item) => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      navItems.forEach((item) => {
+        const el = document.getElementById(item.id);
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, []);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const navItems = [
-    { id: "summary", label: "Professional Summary" },
-    { id: "competencies", label: "Core Competencies" },
-    { id: "experience", label: "Work Experience" },
-    { id: "case-studies", label: "Case Studies" },
-    { id: "bpmn-analysis", label: "Process Flow (BPMN)" },
-    { id: "deliverables", label: "Sample Deliverables" },
-    { id: "data-showcase", label: "Data & BI Showcase" },
-    { id: "certifications", label: "Certifications" },
-    { id: "testimonials", label: "Testimonials" },
-    { id: "contact", label: "Contact Inquiries" }
-  ];
-
   return (
     <div className="min-h-screen grid-bg relative flex flex-col xl:flex-row bg-background text-foreground transition-colors duration-300">
-      
+
       {/* Sticky Left Sidebar Navigation (Desktop) */}
       <aside className="xl:w-80 w-full xl:h-screen xl:sticky xl:top-0 bg-sidebar-bg/90 xl:border-r border-b xl:border-b-0 border-sidebar-border p-6 flex flex-col justify-between shrink-0 z-50 backdrop-blur-md transition-all duration-300">
         <div className="space-y-8">
@@ -67,11 +98,11 @@ export default function Home() {
                   I
                 </div>
                 <div>
-                  <h1 className="text-base font-bold text-foreground tracking-tight">Indhu</h1>
-                  <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Lead Business Analyst</p>
+                  <h1 className="text-base font-bold text-foreground tracking-tight">Indhu S</h1>
+                  <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Quality & Transaction Analyst</p>
                 </div>
               </div>
-              
+
               {/* Theme Toggle Button */}
               <button
                 onClick={toggleTheme}
@@ -81,27 +112,27 @@ export default function Home() {
                 {theme === "dark" ? (
                   // Lucide Sun Icon
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="4"/>
-                    <path d="M12 2v2"/>
-                    <path d="M12 20v2"/>
-                    <path d="M4.93 4.93l1.41 1.41"/>
-                    <path d="M17.66 17.66l1.41 1.41"/>
-                    <path d="M2 12h2"/>
-                    <path d="M20 12h2"/>
-                    <path d="M6.34 17.66l-1.41 1.41"/>
-                    <path d="M19.07 4.93l-1.41 1.41"/>
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2" />
+                    <path d="M12 20v2" />
+                    <path d="M4.93 4.93l1.41 1.41" />
+                    <path d="M17.66 17.66l1.41 1.41" />
+                    <path d="M2 12h2" />
+                    <path d="M20 12h2" />
+                    <path d="M6.34 17.66l-1.41 1.41" />
+                    <path d="M19.07 4.93l-1.41 1.41" />
                   </svg>
                 ) : (
                   // Lucide Moon Icon
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
                   </svg>
                 )}
               </button>
             </div>
-            
+
             <p className="text-[11px] text-text-muted leading-relaxed">
-              Bridging business strategies with technological solutions using process modeling, data analytics, and Agile requirements.
+              Verifying document compliance, auditing financial transactions, and ensuring HIPAA standards with analytical accuracy.
             </p>
           </div>
 
@@ -112,11 +143,10 @@ export default function Home() {
                 key={item.id}
                 href={`#${item.id}`}
                 onClick={() => setActiveSection(item.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2.5 ${
-                  activeSection === item.id
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2.5 ${activeSection === item.id
                     ? "bg-indigo-600/10 text-accent-primary border-l-2 border-accent-primary"
                     : "text-text-muted hover:text-foreground hover:bg-bg-hover"
-                }`}
+                  }`}
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${activeSection === item.id ? "bg-accent-primary" : "bg-slate-400 dark:bg-slate-600"}`} />
                 {item.label}
@@ -129,7 +159,7 @@ export default function Home() {
         <div className="hidden xl:flex flex-col gap-4 border-t border-sidebar-border pt-6">
           <div className="flex gap-3">
             <a
-              href="https://linkedin.com/in/indhuba"
+              href="https://linkedin.com/in/indhu16"
               target="_blank"
               rel="noopener noreferrer"
               className="text-text-muted hover:text-accent-primary transition-colors"
@@ -139,7 +169,7 @@ export default function Home() {
               </svg>
             </a>
             <a
-              href="mailto:indhu.ba.analyst@example.com"
+              href="mailto:indhusekar1609@gmail.com"
               className="text-text-muted hover:text-accent-primary transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -148,14 +178,14 @@ export default function Home() {
             </a>
           </div>
           <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
-            © 2026 Indhu Portfolio
+            © 2026 Indhu S Portfolio
           </div>
         </div>
       </aside>
 
       {/* Main Scrollable Canvas */}
       <main className="flex-grow p-6 md:p-12 xl:p-16 max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] w-full mx-auto space-y-24 overflow-y-auto pb-32 xl:pb-16">
-        
+
         {/* SECTION 1: HERO & SUMMARY */}
         <section id="summary" className="space-y-8 pt-4">
           <div className="space-y-4">
@@ -170,27 +200,27 @@ export default function Home() {
           {/* Professional Summary */}
           <div className="border-l-4 border-indigo-600 pl-6 max-w-3xl space-y-2">
             <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic">
-              "Result-driven Senior Business Analyst with 5+ years of experience specializing in digital transformations, business process modeling (BPMN), and Agile requirements lifecycle management. Proven track record of translating complex business requirements into high-fidelity technical specs (BRDs, User Stories) while building interactive BI dashboards to optimize operations and drive stakeholder decisions."
+              "Dedicated Quality Analyst and Financial Transaction Specialist with hands-on experience in document record management, US healthcare insurance verification, and HIPAA compliance. Proven track record of auditing operational records for quality assurance and reducing transaction claim errors, backed by a strong academic background in Computer Applications (BCA)."
             </p>
           </div>
 
           {/* Quick Stats Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 max-w-5xl">
             <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="text-3xl font-black text-accent-primary">5+ Yrs</div>
-              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Domain Experience</div>
+              <div className="text-3xl font-black text-accent-primary">1.0+ Yrs</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Combined Experience</div>
             </div>
             <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="text-3xl font-black text-accent-primary">85%</div>
-              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Process Wait reduction</div>
-            </div>
-            <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="text-3xl font-black text-accent-primary">$430k</div>
-              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Capital unlocked</div>
+              <div className="text-3xl font-black text-accent-primary">99.8%</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Document Accuracy</div>
             </div>
             <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
               <div className="text-3xl font-black text-accent-primary">100%</div>
-              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Jira Story approval</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">HIPAA Compliance</div>
+            </div>
+            <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="text-3xl font-black text-accent-primary">5,000+</div>
+              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Audits Completed</div>
             </div>
           </div>
         </section>
@@ -211,12 +241,12 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
               </div>
-              <h4 className="text-sm font-bold text-foreground mb-2">Requirements & Analysis</h4>
+              <h4 className="text-sm font-bold text-foreground mb-2">Quality Assurance & Audits</h4>
               <p className="text-xs text-text-muted leading-relaxed mb-4">
-                Specialized in mapping business operations to technical design, eliciting requirements, and formulating BRDs/FRDs.
+                Specialized in reviewing business, operational, and production documents for 100% compliance with client rules.
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {["Gap Analysis", "AS-IS & TO-BE", "BRD/FRD", "BPMN 2.0", "Use Cases"].map((tag) => (
+                {["Document Audit", "Process Compliance", "Quality Checks", "Error Control", "Operational Review"].map((tag) => (
                   <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
                 ))}
               </div>
@@ -229,12 +259,12 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                 </svg>
               </div>
-              <h4 className="text-sm font-bold text-foreground mb-2">Data & Dashboard Engineering</h4>
+              <h4 className="text-sm font-bold text-foreground mb-2">Financial & Insurance Analytics</h4>
               <p className="text-xs text-text-muted leading-relaxed mb-4">
-                Writing robust SQL queries to audit workflows, cleaning inventory datasets in Excel, and visualizing trends in Power BI/Tableau.
+                Analyzing patient demographics and verifying US insurance eligibility/prior authorization under strict HIPAA guidelines.
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {["PostgreSQL", "Power BI", "MS Excel", "DAX", "Tableau", "SQL Sandbox"].map((tag) => (
+                {["HIPAA Compliance", "Eligibility Check", "Prior Authorization", "MS Excel", "SQL Queries", "Claim Auditing"].map((tag) => (
                   <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
                 ))}
               </div>
@@ -247,12 +277,12 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h4 className="text-sm font-bold text-foreground mb-2">Agile Delivery & Scrum</h4>
+              <h4 className="text-sm font-bold text-foreground mb-2">Systems & Database Basics</h4>
               <p className="text-xs text-text-muted leading-relaxed mb-4">
-                Facilitating Scrum iterations, writing user stories, managing Jira boards, and leading UAT exception tests.
+                Combining a computer applications (BCA) foundation with Scrum delivery basics to maintain clean records database tables.
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {["Scrum Framework", "Jira", "Confluence", "User Stories", "UAT Testing"].map((tag) => (
+                {["BCA Foundations", "SQL Sandbox", "Database Design", "Jira Basics", "Record Systems"].map((tag) => (
                   <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
                 ))}
               </div>
@@ -276,21 +306,22 @@ export default function Home() {
               </span>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
-                  <h4 className="text-base font-bold text-foreground">Lead Business Analyst</h4>
-                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">CareFirst Health Network | Full-time</p>
+                  <h4 className="text-base font-bold text-foreground">Quality Analyst – Document Record Management</h4>
+                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">HTC Global Services | Full-time</p>
                 </div>
                 <span className="text-xs text-accent-primary font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
-                  2024 - Present
+                  April 2025 – November 2025
                 </span>
               </div>
               <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
                 <p>
-                  <strong>Role Objective:</strong> Direct operational efficiency redesigns for outpatient networks, focusing on medical billing operations, registration front-ends, and API clearance engines.
+                  <strong>Role Objective:</strong> Manage high-volume business and operational documents, conducting rigorous validation and quality audits prior to client delivery.
                 </p>
                 <ul className="list-disc pl-4 space-y-1 text-text-muted">
-                  <li>Formulated AS-IS/TO-BE process mappings (BPMN), reducing patient check-in bottlenecks by 85%.</li>
-                  <li>Authored 45+ Jira user stories with Given-When-Then criteria, ensuring zero sprint backlogs due to specifications.</li>
-                  <li>Managed clearinghouse integrations, reducing claims registration entry errors by 92%.</li>
+                  <li>Verified production documents for accuracy, completeness, and full compliance with client specifications.</li>
+                  <li>Performed comprehensive quality assurance checks on business and operational documents before final delivery.</li>
+                  <li>Managed high-volume document validation workloads, consistently ensuring timely submission to clients.</li>
+                  <li>Maintained strict document quality standards, reducing production error rates through detailed verification processes.</li>
                 </ul>
               </div>
             </div>
@@ -302,47 +333,21 @@ export default function Home() {
               </span>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
-                  <h4 className="text-base font-bold text-foreground">Senior Business & Data Analyst</h4>
-                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">Apex Logistics Solutions | Full-time</p>
+                  <h4 className="text-base font-bold text-foreground">Financial Transaction Analyst Intern</h4>
+                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">S10 Healthcare Solutions Pvt. Ltd | Internship</p>
                 </div>
                 <span className="text-xs text-text-muted font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-bg-hover border border-card-border">
-                  2022 - 2024
+                  July 2024 – December 2024
                 </span>
               </div>
               <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
                 <p>
-                  <strong>Role Objective:</strong> Audit supply-chain inventories and optimize safety stock thresholds to minimize retail inventory costs.
+                  <strong>Role Objective:</strong> Audit US healthcare patient accounts and verify insurance eligibility to minimize claims denial rates.
                 </p>
                 <ul className="list-disc pl-4 space-y-1 text-text-muted">
-                  <li>Queried Postgres databases via SQL to diagnose vendor lead time anomalies, freeing up $430,000 in working capital.</li>
-                  <li>Built interactive inventory dashboards in Power BI, connected to live ERP SQL feeds for buyers.</li>
-                  <li>Facilitated stakeholder elicitation workshops to gather specifications for warehouse management migrations.</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Experience Item 3 */}
-            <div className="relative space-y-2">
-              <span className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-background flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
-              </span>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                <div>
-                  <h4 className="text-base font-bold text-foreground">Systems / Business Analyst</h4>
-                  <p className="text-xs text-text-muted font-bold uppercase tracking-wider">MedTech Integrations Group | Full-time</p>
-                </div>
-                <span className="text-xs text-text-muted font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-bg-hover border border-card-border">
-                  2020 - 2022
-                </span>
-              </div>
-              <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
-                <p>
-                  <strong>Role Objective:</strong> Partner with software engineering squads to deploy SaaS patient portals and medical telemetry components.
-                </p>
-                <ul className="list-disc pl-4 space-y-1 text-text-muted">
-                  <li>Authored detailed Functional Requirements Documents (FRDs) and System Interface Specifications.</li>
-                  <li>Drafted wireframe user flows in Balsamiq, streamlining patient onboarding screens.</li>
-                  <li>Executed User Acceptance Testing (UAT) scripts, maintaining an SLA of &lt;1% critical production defects.</li>
+                  <li>Reviewed and authorized patient demographic and insurance information for US healthcare clients, ensuring 100% compliance with HIPAA guidelines.</li>
+                  <li>Processed prior authorizations and verified insurance eligibility, improving transactional accuracy and reducing claim rejections.</li>
+                  <li>Maintained and updated patient records/documentation, ensuring timely retrieval for internal/external audits and operational reporting.</li>
                 </ul>
               </div>
             </div>
@@ -402,47 +407,47 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
-            {/* Cert 1 */}
+            {/* Education 1 */}
             <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
               <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-sm shrink-0">
-                CBAP
+                BCA
               </div>
               <div>
-                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Certified Business Analysis Professional (CBAP)</h4>
-                <p className="text-[10px] text-text-muted font-semibold mt-0.5">International Institute of Business Analysis (IIBA) | ID: 9028103</p>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Bachelor of Computer Application (BCA)</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">AM Jain College | 2021 - 2024 | CGPA: 7.79</p>
               </div>
             </div>
 
-            {/* Cert 2 */}
-            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-[10px] shrink-0">
-                PMI-PBA
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Professional in Business Analysis (PMI-PBA)</h4>
-                <p className="text-[10px] text-text-muted font-semibold mt-0.5">Project Management Institute (PMI) | ID: PBA-3829103</p>
-              </div>
-            </div>
-
-            {/* Cert 3 */}
-            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-sm shrink-0">
-                CSM
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Certified ScrumMaster (CSM)</h4>
-                <p className="text-[10px] text-text-muted font-semibold mt-0.5">Scrum Alliance | ID: CSM-9830219</p>
-              </div>
-            </div>
-
-            {/* Degree */}
+            {/* Education 2 */}
             <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
               <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-xs shrink-0">
-                B.Sc.
+                HSE
               </div>
               <div>
-                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">B.Sc. in Management Information Systems</h4>
-                <p className="text-[10px] text-text-muted font-semibold mt-0.5">State University | Honor Graduate</p>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Higher Secondary Education (HSE)</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">Jaigopal Garodia Higher Secondary | 2020 - 2021 | Percentage: 86%</p>
+              </div>
+            </div>
+
+            {/* Education 3 */}
+            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-xs shrink-0">
+                SSLC
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Secondary School Leaving Certificate (SSLC)</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">Shakespeare Matriculation School | 2019 | Percentage: 75%</p>
+              </div>
+            </div>
+
+            {/* Compliance Badge */}
+            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
+              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-[10px] shrink-0">
+                HIPAA
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">HIPAA Compliance Guidelines Training</h4>
+                <p className="text-[10px] text-text-muted font-semibold mt-0.5">S10 Healthcare Internal Training | US Healthcare Standards</p>
               </div>
             </div>
           </div>
@@ -477,10 +482,10 @@ export default function Home() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-base shadow-md">
                   I
                 </div>
-                <h4 className="text-sm font-bold text-foreground">Indhu | Lead Business Analyst</h4>
+                <h4 className="text-sm font-bold text-foreground">Indhu S | Quality & Transaction Analyst</h4>
               </div>
               <p className="text-xs text-text-muted leading-relaxed max-w-sm">
-                Driving organizational maturity and systems efficiency. Translating complex business processes into modular, scalable technical requirements and actionable BI tools.
+                Ensuring organizational compliance and systems efficiency. Auditing complex business and health records for quality assurance and HIPAA guidelines.
               </p>
             </div>
 
@@ -504,18 +509,18 @@ export default function Home() {
               <h5 className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Connect</h5>
               <ul className="text-xs text-text-muted space-y-2 font-semibold">
                 <li>
-                  <a href="mailto:indhu.ba.analyst@example.com" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                    indhu.ba.analyst@example.com
+                  <a href="mailto:indhusekar1609@gmail.com" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                    indhusekar1609@gmail.com
                   </a>
                 </li>
                 <li>
-                  <a href="https://linkedin.com/in/indhuba" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                    linkedin.com/in/indhuba
+                  <a href="https://linkedin.com/in/indhu16" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                    linkedin.com/in/indhu16
                   </a>
                 </li>
                 <li>
-                  <a href="https://github.com/indhu-analyst" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                    github.com/indhu-analyst
+                  <a href="https://github.com/indhusekar1609" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                    github.com/indhusekar1609
                   </a>
                 </li>
               </ul>
@@ -524,7 +529,7 @@ export default function Home() {
 
           <div className="border-t border-card-border mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-text-muted font-bold uppercase tracking-wider">
             <div>
-              © 2026 Indhu Portfolio. All rights reserved.
+              © 2026 Indhu S Portfolio. All rights reserved.
             </div>
             <div>
               Designed with Next.js & Tailwind CSS
