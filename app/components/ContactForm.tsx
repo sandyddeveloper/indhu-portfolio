@@ -34,7 +34,7 @@ export default function ContactForm() {
           <span className="text-[10px] text-indigo-605 dark:text-indigo-400 font-bold uppercase tracking-widest">Connect</span>
           <h4 className="text-xl font-bold text-foreground mt-1">Get in Touch</h4>
           <p className="text-xs text-text-muted leading-relaxed mt-2">
-            Looking to recruit a Quality Analyst or Transaction Specialist for document validation, HIPAA compliance, or process audits? Drop a line here!
+            Looking to recruit an Aspiring Business Analyst or consult on requirements gathering, SQL queries, Power BI dashboards, or process documentation? Drop a line here!
           </p>
         </div>
 

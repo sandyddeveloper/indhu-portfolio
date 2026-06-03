@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Indhu S | Quality & Transaction Analyst Portfolio",
-  description: "Quality Analyst and Financial Transaction Specialist portfolio demonstrating expertise in document validation, compliance audit, US healthcare transactions, and HIPAA standards.",
-  keywords: ["Quality Analyst", "Financial Transaction Analyst", "US Healthcare", "HIPAA Compliance", "Prior Authorization", "Eligibility Verification", "BCA", "SQL", "Document Record Management"],
+  title: "Indhu S | Aspiring Business Analyst Portfolio",
+  description: "Aspiring Business Analyst portfolio demonstrating expertise in requirements gathering, operational documentation, database systems (SQL), and Power BI data analysis.",
+  keywords: ["Business Analyst", "Aspiring Business Analyst", "Requirements Gathering", "Operational Documentation", "SQL Queries", "Power BI", "Data Analytics", "BCA", "Document Record Management"],
   authors: [{ name: "Indhu S" }],
 };
 

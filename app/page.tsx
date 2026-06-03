@@ -99,7 +99,7 @@ export default function Home() {
                 </div>
                 <div>
                   <h1 className="text-base font-bold text-foreground tracking-tight">Indhu S</h1>
-                  <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Quality & Transaction Analyst</p>
+                  <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Aspiring Business Analyst</p>
                 </div>
               </div>
 
@@ -132,7 +132,7 @@ export default function Home() {
             </div>
 
             <p className="text-[11px] text-text-muted leading-relaxed">
-              Verifying document compliance, auditing financial transactions, and ensuring HIPAA standards with analytical accuracy.
+              Aspiring Business Analyst specialized in Requirements Gathering, SQL data queries, Power BI dashboards, and operational process documentation.
             </p>
           </div>
 
@@ -190,7 +190,7 @@ export default function Home() {
         <section id="summary" className="space-y-8 pt-4">
           <div className="space-y-4">
             <div className="inline-block bg-indigo-500/10 text-accent-primary text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-500/20 uppercase tracking-widest">
-              Available for Full-time Roles & Consulting
+              Open to Explore Opportunities
             </div>
             <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-tight max-w-4xl">
               Driving efficiency through <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-400 dark:from-indigo-400 dark:to-indigo-200">strategic analysis</span> and structured data.
@@ -200,7 +200,7 @@ export default function Home() {
           {/* Professional Summary */}
           <div className="border-l-4 border-indigo-600 pl-6 max-w-3xl space-y-2">
             <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic">
-              "Dedicated Quality Analyst and Financial Transaction Specialist with hands-on experience in document record management, US healthcare insurance verification, and HIPAA compliance. Proven track record of auditing operational records for quality assurance and reducing transaction claim errors, backed by a strong academic background in Computer Applications (BCA)."
+              "Detail-oriented Computer Applications graduate (BCA) and aspiring Business Analyst with hands-on experience in document verification, financial transaction auditing, and US healthcare prior authorization. Strong foundation in requirements gathering, SQL querying, Power BI dashboard design, and database systems, looking to leverage quality assurance and compliance expertise into a high-impact business analysis role."
             </p>
           </div>
 
@@ -241,12 +241,12 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
               </div>
-              <h4 className="text-sm font-bold text-foreground mb-2">Quality Assurance & Audits</h4>
+              <h4 className="text-sm font-bold text-foreground mb-2">Requirements & Documentation</h4>
               <p className="text-xs text-text-muted leading-relaxed mb-4">
-                Specialized in reviewing business, operational, and production documents for 100% compliance with client rules.
+                Skilled in capturing business needs, mapping operational flows (AS-IS/TO-BE), and producing BRD/FRD functional documents.
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {["Document Audit", "Process Compliance", "Quality Checks", "Error Control", "Operational Review"].map((tag) => (
+                {["Requirements Gathering", "AS-IS / TO-BE", "Functional Specs", "BRD / FRD", "BPMN 2.0 Flow", "Jira User Stories"].map((tag) => (
                   <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
                 ))}
               </div>
@@ -259,12 +259,12 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
                 </svg>
               </div>
-              <h4 className="text-sm font-bold text-foreground mb-2">Financial & Insurance Analytics</h4>
+              <h4 className="text-sm font-bold text-foreground mb-2">Data & Power BI Analytics</h4>
               <p className="text-xs text-text-muted leading-relaxed mb-4">
-                Analyzing patient demographics and verifying US insurance eligibility/prior authorization under strict HIPAA guidelines.
+                Writing SQL database queries to inspect transaction feeds, building Power BI KPI screens, and validating Excel spreadsheets.
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {["HIPAA Compliance", "Eligibility Check", "Prior Authorization", "MS Excel", "SQL Queries", "Claim Auditing"].map((tag) => (
+                {["SQL Querying", "Power BI", "MS Excel Tools", "Data Dashboards", "Relational Databases", "Data Verification"].map((tag) => (
                   <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
                 ))}
               </div>
@@ -277,12 +277,12 @@ export default function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h4 className="text-sm font-bold text-foreground mb-2">Systems & Database Basics</h4>
+              <h4 className="text-sm font-bold text-foreground mb-2">Quality & Process Compliance</h4>
               <p className="text-xs text-text-muted leading-relaxed mb-4">
-                Combining a computer applications (BCA) foundation with Scrum delivery basics to maintain clean records database tables.
+                Leveraging QA document audit, HIPAA standard requirements, and database transaction tracking to enforce high-quality business records.
               </p>
               <div className="flex flex-wrap gap-1.5">
-                {["BCA Foundations", "SQL Sandbox", "Database Design", "Jira Basics", "Record Systems"].map((tag) => (
+                {["Document Audit", "Process Quality", "HIPAA Standards", "Claim Verification", "BCA IT Foundation", "Scrum Basics"].map((tag) => (
                   <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
                 ))}
               </div>
@@ -482,10 +482,10 @@ export default function Home() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-base shadow-md">
                   I
                 </div>
-                <h4 className="text-sm font-bold text-foreground">Indhu S | Quality & Transaction Analyst</h4>
+                <h4 className="text-sm font-bold text-foreground">Indhu S | Aspiring Business Analyst</h4>
               </div>
               <p className="text-xs text-text-muted leading-relaxed max-w-sm">
-                Ensuring organizational compliance and systems efficiency. Auditing complex business and health records for quality assurance and HIPAA guidelines.
+                Gathering requirements, auditing operational records, and engineering SQL databases and Power BI systems for operational clarity.
               </p>
             </div>
 
