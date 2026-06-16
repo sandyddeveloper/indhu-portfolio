@@ -13,7 +13,7 @@ const navItems = [
   { id: "summary", label: "Professional Summary" },
   { id: "competencies", label: "Core Competencies" },
   { id: "experience", label: "Work Experience" },
-  { id: "case-studies", label: "Case Studies" },
+  // { id: "case-studies", label: "Case Studies" },
   { id: "bpmn-analysis", label: "Process Flow (BPMN)" },
   { id: "deliverables", label: "Sample Deliverables" },
   { id: "data-showcase", label: "Data & BI Showcase" },
@@ -144,8 +144,8 @@ export default function Home() {
                 href={`#${item.id}`}
                 onClick={() => setActiveSection(item.id)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2.5 ${activeSection === item.id
-                    ? "bg-indigo-600/10 text-accent-primary border-l-2 border-accent-primary"
-                    : "text-text-muted hover:text-foreground hover:bg-bg-hover"
+                  ? "bg-indigo-600/10 text-accent-primary border-l-2 border-accent-primary"
+                  : "text-text-muted hover:text-foreground hover:bg-bg-hover"
                   }`}
               >
                 <span className={`w-1.5 h-1.5 rounded-full ${activeSection === item.id ? "bg-accent-primary" : "bg-slate-400 dark:bg-slate-600"}`} />
@@ -355,14 +355,14 @@ export default function Home() {
         </section>
 
         {/* SECTION 4: CASE STUDIES */}
-        <section id="case-studies" className="space-y-6">
+        {/* <section id="case-studies" className="space-y-6">
           <div className="space-y-1.5">
             <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Deep Dives</span>
             <h3 className="text-2xl font-bold text-foreground">Case Studies</h3>
             <p className="text-xs text-text-muted">Comprehensive walk-through of the end-to-end BA lifecycle for major corporate projects.</p>
           </div>
           <CaseStudyExplorer />
-        </section>
+        </section> */}
 
         {/* SECTION 5: BPMN PROCESS MAPPING */}
         <section id="bpmn-analysis" className="space-y-6">
@@ -439,29 +439,10 @@ export default function Home() {
                 <p className="text-[10px] text-text-muted font-semibold mt-0.5">Shakespeare Matriculation School | 2019 | Percentage: 75%</p>
               </div>
             </div>
-
-            {/* Compliance Badge */}
-            <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-[10px] shrink-0">
-                HIPAA
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">HIPAA Compliance Guidelines Training</h4>
-                <p className="text-[10px] text-text-muted font-semibold mt-0.5">S10 Healthcare Internal Training | US Healthcare Standards</p>
-              </div>
-            </div>
           </div>
         </section>
 
-        {/* SECTION 9: TESTIMONIALS */}
-        <section id="testimonials" className="space-y-6">
-          <div className="space-y-1.5">
-            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Endorsements</span>
-            <h3 className="text-2xl font-bold text-foreground">Recommendations & Vouching</h3>
-            <p className="text-xs text-text-muted">Short quotes from managers, product owners, and engineering partners.</p>
-          </div>
-          <TestimonialsCarousel />
-        </section>
+
 
         {/* SECTION 10: CONTACT */}
         <section id="contact" className="space-y-6 pb-20">
