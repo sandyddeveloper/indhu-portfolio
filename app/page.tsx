@@ -18,7 +18,7 @@ const navItems = [
   { id: "deliverables", label: "Sample Deliverables" },
   { id: "data-showcase", label: "Data & BI Showcase" },
   { id: "certifications", label: "Certifications" },
-  { id: "testimonials", label: "Testimonials" },
+  // { id: "testimonials", label: "Testimonials" },
   { id: "contact", label: "Contact Inquiries" }
 ];
 
