@@ -13,6 +13,7 @@ interface ProcessStep {
   details: string;
   role: string;
   status?: "bottleneck" | "standard" | "automated" | "success";
+  substeps?: { id: string; title: string; details: string; status?: string }[];
 }
 
 const AS_IS_STEPS: ProcessStep[] = [
@@ -113,85 +114,28 @@ const AS_IS_STEPS: ProcessStep[] = [
 
 const TO_BE_STEPS: ProcessStep[] = [
   {
-    id: "start",
-    label: "Online Check-in",
-    type: "start",
-    x: 40,
+    id: "etl-pipeline",
+    label: "Automated ETL Pipeline",
+    type: "task",
+    x: 320,
     y: 95,
-    width: 30,
-    height: 30,
-    details: "Patient receives an automated SMS/email link 24 hours prior to appointment to check in online.",
-    role: "Patient"
-  },
-  {
-    id: "portal-input",
-    label: "Submit Digital Form & ID",
-    type: "task",
-    x: 110,
-    y: 75,
-    width: 115,
-    height: 70,
-    details: "Patient uploads insurance card photo and reviews pre-populated demographical information via smartphone.",
-    role: "Patient",
-    status: "standard"
-  },
-  {
-    id: "api-verification",
-    label: "Automated API Eligibility Verify",
-    type: "task",
-    x: 260,
-    y: 75,
-    width: 120,
-    height: 70,
-    details: "Middleware calls clearinghouse API instantly. Verifies active deductible, copay, and eligibility in < 3 seconds.",
+    width: 240,
+    height: 110,
+    details: "Background Celery ETL pipeline downloads and ingests raw CSV datasets (see rask.py) — automated data enrichment and normalization.",
     role: "System",
-    status: "automated"
-  },
-  {
-    id: "gateway-eligible",
-    label: "Auto-Verified?",
-    type: "gateway",
-    x: 420,
-    y: 90,
-    width: 40,
-    height: 40,
-    details: "Conditional check: Did the API return a successful verified payload?",
-    role: "System"
-  },
-  {
-    id: "reception-triage",
-    label: "Triage Exceptions",
-    type: "task",
-    x: 500,
-    y: 170,
-    width: 110,
-    height: 70,
-    details: "Only failing verifications (approx 8%) are routed to the receptionist for manual intervention, minimizing clinic workloads.",
-    role: "Receptionist",
-    status: "standard"
-  },
-  {
-    id: "auto-checkin",
-    label: "Kiosk Wristband Print",
-    type: "task",
-    x: 500,
-    y: 75,
-    width: 110,
-    height: 70,
-    details: "Successful check-in registers patient automatically. Upon entering the clinic, a QR scan prints their check-in wristband.",
-    role: "Kiosk",
-    status: "success"
-  },
-  {
-    id: "end",
-    label: "Intake Done",
-    type: "end",
-    x: 650,
-    y: 95,
-    width: 30,
-    height: 30,
-    details: "Patient checks in and takes seat in wait room. System notifies doctor.",
-    role: "System"
+    status: "automated",
+    substeps: [
+      { id: 's1', title: 'Check config', details: 'Read RAW_DATA_ZIP_URL environment variable and local data paths.' },
+      { id: 's2', title: 'Resolve source', details: 'Detect URL type (direct ZIP, Google Drive folder, or individual CSVs).' },
+      { id: 's3', title: 'Download files', details: 'Download ZIP or CSVs; handle Google Drive confirmation pages and large-file flows.' },
+      { id: 's4', title: 'Extract & stage', details: 'Extract ZIP to raw data directory and stage CSVs for parsing.' },
+      { id: 's5', title: 'Parse & clean', details: 'Parse CSVs with pandas, normalize types, and run clean_records for NaN handling.' },
+      { id: 's6', title: 'Enrich & normalize', details: 'Run normalization utilities (resolve_company_ids, normalize_api_salary, generate_deterministic_id).' },
+      { id: 's7', title: 'Chunked DB load', details: 'Insert/update rows in chunks to avoid DB constraints; track loaded IDs to prevent duplicates.' },
+      { id: 's8', title: 'Post-processing', details: 'Run benchmark imports, salary aggregations, and any API prediction jobs.' },
+      { id: 's9', title: 'Logging & fallback', details: 'Log progress, handle errors, and apply fallback direct-download attempts when needed.' },
+      { id: 's10', title: 'Cleanup', details: 'Remove temp zip files and mark pipeline run complete.' }
+    ]
   }
 ];
 
@@ -233,8 +177,7 @@ export default function BpmnViewer() {
           <path d="M 70 110 L 110 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
           {/* Submit -> API Verification */}
           <path d="M 225 110 L 260 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* API Verification -> Gateway */}
-          <path d="M 380 110 L 420 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* no connections in simplified TO-BE (only automated ETL node) */}
           {/* Gateway -> Auto Checkin (Yes) */}
           <path d="M 460 110 L 500 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
           <text x="468" y="102" fill="#10b981" className="text-[10px] font-bold">Yes</text>
@@ -501,6 +444,20 @@ export default function BpmnViewer() {
                 </div>
                 <h5 className="text-base font-bold text-foreground mb-2">{activeStep.label}</h5>
                 <p className="text-xs text-text-muted leading-relaxed">{activeStep.details}</p>
+                {/* ETL step-by-step panel */}
+                {activeStep.id === 'etl-pipeline' && activeStep.substeps && (
+                  <div className="mt-3">
+                    <h6 className="text-[11px] font-bold text-text-muted mb-2">Automated ETL Pipeline — Step-by-step</h6>
+                    <ol className="text-[12px] text-text-muted list-decimal list-inside space-y-2">
+                      {activeStep.substeps.map((s) => (
+                        <li key={s.id} className="">
+                          <div className="font-semibold text-[11px] text-foreground">{s.title}</div>
+                          <div className="text-[11px] text-text-muted">{s.details}</div>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
               </div>
 
               {activeStep.status === "bottleneck" && (

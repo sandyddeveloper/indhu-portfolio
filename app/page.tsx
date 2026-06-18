@@ -132,7 +132,7 @@ export default function Home() {
             </div>
 
             <p className="text-[11px] text-text-muted leading-relaxed">
-              Aspiring Business Analyst specialized in Requirements Gathering, SQL data queries, Power BI dashboards, and operational process documentation.
+              Aspiring Data Engineer with expertise in SQL, ETL pipeline development, data modeling, and Power BI dashboards, focused on transforming raw data into reliable, scalable, and actionable insights.
             </p>
           </div>
 
@@ -200,7 +200,7 @@ export default function Home() {
           {/* Professional Summary */}
           <div className="border-l-4 border-indigo-600 pl-6 max-w-3xl space-y-2">
             <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic">
-              "Detail-oriented Computer Applications graduate (BCA) and aspiring Business Analyst with hands-on experience in document verification, financial transaction auditing, and US healthcare prior authorization. Strong foundation in requirements gathering, SQL querying, Power BI dashboard design, and database systems, looking to leverage quality assurance and compliance expertise into a high-impact business analysis role."
+              Detail-oriented Computer Applications graduate (BCA) and aspiring Data Engineer with hands-on experience in document verification, financial transaction auditing, and US healthcare prior authorization. Strong foundation in SQL querying, ETL processes, data modeling, and Power BI dashboard development, with a focus on building scalable data pipelines and ensuring data quality, integrity, and compliance. Eager to leverage analytical and problem-solving skills to contribute to efficient and data-driven engineering solutions.
             </p>
           </div>
 
