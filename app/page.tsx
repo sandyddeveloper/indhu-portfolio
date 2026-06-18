@@ -15,7 +15,7 @@ const navItems = [
   { id: "experience", label: "Work Experience" },
   // { id: "case-studies", label: "Case Studies" },
   { id: "bpmn-analysis", label: "Process Flow (BPMN)" },
-  { id: "deliverables", label: "Sample Deliverables" },
+  // { id: "deliverables", label: "Sample Deliverables" },
   { id: "data-showcase", label: "Data & BI Showcase" },
   { id: "certifications", label: "Certifications" },
   // { id: "testimonials", label: "Testimonials" },
@@ -375,14 +375,14 @@ export default function Home() {
         </section>
 
         {/* SECTION 6: SAMPLE DELIVERABLES */}
-        <section id="deliverables" className="space-y-6">
+        {/* <section id="deliverables" className="space-y-6">
           <div className="space-y-1.5">
             <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Artifacts</span>
             <h3 className="text-2xl font-bold text-foreground">Sample Deliverables Showcase</h3>
             <p className="text-xs text-text-muted">High-fidelity mocks of functional requirements, scrum backlogs, and portal wireframes.</p>
           </div>
           <DeliverablesViewer />
-        </section>
+        </section> */}
 
         {/* SECTION 7: DATA & BI SHOWCASE */}
         <section id="data-showcase" className="space-y-10">
