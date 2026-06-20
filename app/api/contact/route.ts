@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, after } from "next/server";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 
@@ -25,10 +25,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const emailHost = process.env.EMAIL_HOST || "smtp.gmail.com";
+    const emailPort = parseInt(process.env.EMAIL_PORT || "465", 10);
+    const emailSecure = process.env.EMAIL_SECURE ? process.env.EMAIL_SECURE === "true" : (emailPort === 465);
+
     const smtpOptions: SMTPTransport.Options & { family?: number } = {
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, // Use SSL
+      host: emailHost,
+      port: emailPort,
+      secure: emailSecure,
       auth: {
         user: emailUser,
         pass: emailPass,
@@ -40,12 +44,12 @@ export async function POST(request: NextRequest) {
       socketTimeout: 5000,
     };
 
-    // Configure Nodemailer Gmail SMTP transporter
+    // Configure Nodemailer SMTP transporter dynamically
     const transporter = nodemailer.createTransport(smtpOptions);
 
     const mailOptions = {
-      from: `"${name}" <${emailUser}>`, // Must be the authenticated user to pass SPF/DKIM validation
-      to: "indhusekar1609@gmail.com",
+      from: `"${name}" <${email}>`, // From address is from user entered in UI
+      to: emailUser, // To address is from EMAIL_USER
       replyTo: email,
       subject: `Portfolio Contact: ${subject || "No Subject"} - from ${name}`,
       text: `You have received a new message from your portfolio contact form.
@@ -87,8 +91,15 @@ ${message}
       `,
     };
 
-    // Send the email
-    await transporter.sendMail(mailOptions);
+    // Send the email in the background so the HTTP response returns immediately (~100ms)
+    after(async () => {
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log("Contact email sent successfully in the background.");
+      } catch (err) {
+        console.error("Error sending contact email in background:", err);
+      }
+    });
 
     return Response.json({ success: true }, { status: 200 });
   } catch (error: any) {
