@@ -9,7 +9,7 @@ export default function ContactForm() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!name || !email || !message) {
       setStatus("error");
@@ -17,13 +17,28 @@ export default function ContactForm() {
     }
 
     setStatus("sending");
-    setTimeout(() => {
-      setStatus("success");
-      setName("");
-      setEmail("");
-      setSubject("");
-      setMessage("");
-    }, 1500);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      if (response.ok) {
+        setStatus("success");
+        setName("");
+        setEmail("");
+        setSubject("");
+        setMessage("");
+      } else {
+        setStatus("error");
+      }
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      setStatus("error");
+    }
   };
 
   return (
@@ -172,7 +187,7 @@ export default function ContactForm() {
 
             {status === "error" && (
               <div className="text-xs text-rose-600 dark:text-rose-400 font-semibold">
-                Please complete all required fields.
+                An error occurred. Please ensure all required fields are complete and try again.
               </div>
             )}
 
