@@ -125,7 +125,20 @@ export default function DashboardSimulator() {
         </div>
 
         {/* Filter controls */}
-        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto items-center">
+          {/* Download Practice Dataset (Excel) */}
+          <a
+            href="/retail_sales_telemetry.xlsx"
+            download
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-650 dark:text-indigo-400 border border-indigo-500/20 rounded-xl text-[10px] font-bold transition-all shrink-0 cursor-pointer"
+            title="Download full practice dataset with sales transactions and inventory snapshots"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download Practice Dataset (Excel)
+          </a>
+
           {/* Department Filter */}
           <div className="flex items-center bg-background rounded-xl border border-card-border p-0.5 transition-colors duration-300">
             <span className="text-[10px] text-text-muted font-bold px-2 uppercase shrink-0 hidden sm:inline">Category:</span>
