@@ -339,7 +339,11 @@ export default function BpmnViewer() {
       {/* BPMN Interactive Map */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* SVG Container */}
-        <div className="lg:col-span-2 bg-sidebar-bg/60 border border-card-border rounded-xl p-4 overflow-x-auto relative flex items-center justify-center min-h-[300px] transition-colors duration-300">
+        <div className="lg:col-span-2 bg-sidebar-bg/60 border border-card-border rounded-xl p-4 overflow-x-auto relative flex justify-start items-center lg:justify-center min-h-[300px] transition-colors duration-300 touch-pan-x no-scrollbar sm:scrollbar-thin">
+          {/* Mobile Swipe Hint */}
+          <div className="absolute bottom-3 left-4 text-[8px] font-bold text-indigo-500 dark:text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20 lg:hidden animate-pulse select-none pointer-events-none tracking-wider">
+            SCROLL FLOW ⟷
+          </div>
           <svg
             className="min-w-[700px] h-[270px] select-none"
             viewBox="0 0 850 260"

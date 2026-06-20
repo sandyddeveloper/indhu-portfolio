@@ -20,10 +20,71 @@ const navItems = [
   { id: "contact", label: "Contact Inquiries" }
 ];
 
+interface AnimatedCounterProps {
+  value: number;
+  duration?: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  active?: boolean;
+}
+
+function AnimatedCounter({
+  value,
+  duration = 1500,
+  decimals = 0,
+  prefix = "",
+  suffix = "",
+  active = true
+}: AnimatedCounterProps) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!active) {
+      setCount(0);
+      return;
+    }
+
+    const steps = 60; // 60 updates over duration
+    const stepTime = duration / steps;
+    let currentStep = 0;
+
+    const timer = setInterval(() => {
+      currentStep++;
+      const progress = currentStep / steps;
+      const easeProgress = 1 - Math.pow(1 - progress, 3); // cubic ease out
+      const currentCount = easeProgress * value;
+
+      setCount(currentCount);
+
+      if (currentStep >= steps) {
+        clearInterval(timer);
+        setCount(value); // ensure exact landing on final value
+      }
+    }, stepTime);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [value, duration, active]);
+
+  return (
+    <span>
+      {prefix}
+      {count.toLocaleString("en-US", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })}
+      {suffix}
+    </span>
+  );
+}
+
 export default function Home() {
   const [activeSection, setActiveSection] = useState("summary");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [loading, setLoading] = useState(true);
+  const [statsVisible, setStatsVisible] = useState(false);
 
   // Load theme from localStorage or system preference on mount
   useEffect(() => {
@@ -79,6 +140,28 @@ export default function Home() {
     };
   }, []);
 
+  // Trigger stats animation only when stats grid is scrolled into viewport (below fold on mobile)
+  useEffect(() => {
+    if (loading) return;
+    const el = document.getElementById("stats-grid");
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsVisible(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.15 } // trigger when 15% of grid is visible
+    );
+
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+    };
+  }, [loading]);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
@@ -90,7 +173,9 @@ export default function Home() {
       <div className="w-full max-w-[1500px] min-[1600px]:max-w-[1600px] min-[1920px]:max-w-[1850px] min-[2560px]:max-w-[2300px] min-[3840px]:max-w-[3000px] min-[7680px]:max-w-[5000px] flex flex-col xl:flex-row relative min-h-screen">
 
       {/* Sticky Left Sidebar Navigation (Desktop) */}
-      <aside className="xl:w-80 w-full xl:h-screen xl:sticky xl:top-0 bg-sidebar-bg/90 xl:border-r border-b xl:border-b-0 border-sidebar-border p-6 flex flex-col justify-between shrink-0 z-50 backdrop-blur-md transition-all duration-300">
+      <aside className={`xl:w-80 w-full xl:h-screen xl:sticky xl:top-0 bg-sidebar-bg/90 xl:border-r border-b xl:border-b-0 border-sidebar-border p-6 flex flex-col justify-between shrink-0 z-50 backdrop-blur-md transition-all duration-500 ${
+        loading ? "opacity-0 pointer-events-none" : "opacity-100 animate-fade-in"
+      }`}>
         
         {/* Logo / Profile Brief */}
         <div className="space-y-4">
@@ -185,7 +270,9 @@ export default function Home() {
       </aside>
 
       {/* Main Scrollable Canvas */}
-      <main className="flex-grow p-6 md:p-12 xl:p-16 w-full space-y-24 overflow-y-auto pb-28 xl:pb-0">
+      <main className={`flex-grow p-6 md:p-12 xl:p-16 w-full space-y-24 overflow-y-auto pb-28 xl:pb-0 transition-all duration-500 ${
+        loading ? "opacity-0 pointer-events-none" : "opacity-100 animate-slide-up"
+      }`}>
 
         {/* SECTION 1: HERO & SUMMARY */}
         <section id="summary" className="space-y-8 pt-4">
@@ -206,21 +293,29 @@ export default function Home() {
           </div>
 
           {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 max-w-5xl">
+          <div id="stats-grid" className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 max-w-5xl">
             <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="text-3xl font-black text-accent-primary">1.0+ Yrs</div>
+              <div className="text-3xl font-black text-accent-primary">
+                <AnimatedCounter value={1.0} decimals={1} suffix="+ Yrs" active={!loading && statsVisible} />
+              </div>
               <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Combined Experience</div>
             </div>
             <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="text-3xl font-black text-accent-primary">99.8%</div>
+              <div className="text-3xl font-black text-accent-primary">
+                <AnimatedCounter value={99.8} decimals={1} suffix="%" active={!loading && statsVisible} />
+              </div>
               <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Document Accuracy</div>
             </div>
             <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="text-3xl font-black text-accent-primary">100%</div>
+              <div className="text-3xl font-black text-accent-primary">
+                <AnimatedCounter value={100} decimals={0} suffix="%" active={!loading && statsVisible} />
+              </div>
               <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">HIPAA Compliance</div>
             </div>
             <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-              <div className="text-3xl font-black text-accent-primary">5,000+</div>
+              <div className="text-3xl font-black text-accent-primary">
+                <AnimatedCounter value={5000} decimals={0} suffix="+" active={!loading && statsVisible} />
+              </div>
               <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Audits Completed</div>
             </div>
           </div>
@@ -514,7 +609,9 @@ export default function Home() {
         </footer>
 
         {/* Floating Mobile Bottom Navigation Dock */}
-        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-[480px] bg-sidebar-bg/90 border border-sidebar-border rounded-full p-2.5 flex justify-around items-center shadow-2xl backdrop-blur-md z-50 xl:hidden transition-colors duration-300">
+        <div className={`fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-[480px] bg-sidebar-bg/90 border border-sidebar-border rounded-full p-2.5 flex justify-around items-center shadow-2xl backdrop-blur-md z-50 xl:hidden transition-all duration-500 ${
+          loading ? "opacity-0 pointer-events-none" : "opacity-100 animate-fade-in"
+        }`}>
           <a href="#summary" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />

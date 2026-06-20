@@ -107,7 +107,7 @@ export default function InteractiveSqlSandbox() {
             Choose a business logic scenario below. Read the SQL queries written to audit systems, and execute them to see live data telemetry.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2 w-full md:w-auto">
+        <div className="grid grid-cols-3 gap-1.5 w-full md:flex md:flex-wrap md:gap-2 md:w-auto">
           {QUERIES.map((q) => (
             <button
               key={q.id}
@@ -132,7 +132,7 @@ export default function InteractiveSqlSandbox() {
       {/* SQL Editor Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-12">
         {/* Editor Screen (Left) - Kept dark styled for code editor feel */}
-        <div className="xl:col-span-7 border-r border-card-border bg-slate-950 flex flex-col justify-between transition-colors duration-300">
+        <div className="xl:col-span-7 xl:border-r border-b xl:border-b-0 border-card-border bg-slate-950 flex flex-col justify-between transition-colors duration-300">
           <div className="p-4 border-b border-slate-900 flex justify-between items-center text-[11px] text-slate-500 font-mono">
             <span className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>

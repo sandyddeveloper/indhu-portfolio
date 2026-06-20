@@ -125,12 +125,12 @@ export default function DashboardSimulator() {
         </div>
 
         {/* Filter controls */}
-        <div className="flex flex-wrap gap-3 w-full sm:w-auto items-center">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto items-start sm:items-center">
           {/* Download Practice Dataset (Excel) */}
           <a
             href="/retail_sales_telemetry.xlsx"
             download
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-650 dark:text-indigo-400 border border-indigo-500/20 rounded-xl text-[10px] font-bold transition-all shrink-0 cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-650 dark:text-indigo-400 border border-indigo-500/20 rounded-xl text-[10px] font-bold transition-all w-full sm:w-auto cursor-pointer"
             title="Download full practice dataset with sales transactions and inventory snapshots"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -140,7 +140,7 @@ export default function DashboardSimulator() {
           </a>
 
           {/* Department Filter */}
-          <div className="flex items-center bg-background rounded-xl border border-card-border p-0.5 transition-colors duration-300">
+          <div className="flex items-center justify-between sm:justify-start bg-background rounded-xl border border-card-border p-0.5 w-full sm:w-auto transition-colors duration-300">
             <span className="text-[10px] text-text-muted font-bold px-2 uppercase shrink-0 hidden sm:inline">Category:</span>
             <button
               onClick={() => setDept("ALL")}
@@ -177,7 +177,7 @@ export default function DashboardSimulator() {
           </div>
 
           {/* Timeframe Filter */}
-          <div className="flex items-center bg-background rounded-xl border border-card-border p-0.5 shrink-0 transition-colors duration-300">
+          <div className="flex items-center justify-between sm:justify-start bg-background rounded-xl border border-card-border p-0.5 w-full sm:w-auto transition-colors duration-300">
             <button
               onClick={() => setPeriod("30D")}
               className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
@@ -274,11 +274,11 @@ export default function DashboardSimulator() {
           </div>
           <div className="flex justify-between text-[9px] text-text-muted font-bold uppercase tracking-wider px-6 mt-2">
             <span>Jan</span>
-            <span>Feb</span>
+            <span className="hidden sm:inline">Feb</span>
             <span>Mar</span>
-            <span>Apr</span>
+            <span className="hidden sm:inline">Apr</span>
             <span>May</span>
-            <span>Jun</span>
+            <span className="hidden sm:inline">Jun</span>
             <span>Jul</span>
             <span>Aug</span>
           </div>
