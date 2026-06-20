@@ -19,123 +19,211 @@ interface ProcessStep {
 const AS_IS_STEPS: ProcessStep[] = [
   {
     id: "start",
-    label: "Patient Arrives",
+    label: "Dataset Received",
     type: "start",
     x: 40,
     y: 95,
     width: 30,
     height: 30,
-    details: "Patient enters the clinic, triggering the physical check-in workflow.",
-    role: "Patient"
+    details: "A new batch of retail job listings and compensation telemetry datasets (CSVs) is delivered to the staging directory by external web scrapers/crawlers.",
+    role: "External"
   },
   {
-    id: "form-fill",
-    label: "Fill Paper Form",
+    id: "manual-download",
+    label: "Manual Download & Unzip",
     type: "task",
     x: 110,
     y: 75,
     width: 100,
     height: 70,
-    details: "Patient manually fills out a multi-page clipboard form. Common source of legibility issues and transcription errors.",
-    role: "Patient",
+    details: "The engineer manually downloads large zip archives from remote cloud storage or shared folders, unzips them locally, and stages raw files in local directories. Average duration: 10 minutes.",
+    role: "Data Engineer",
     status: "bottleneck"
   },
   {
-    id: "transcribe",
-    label: "Transcribe Data to EHR",
+    id: "manual-clean",
+    label: "Manual Excel Cleaning",
     type: "task",
     x: 250,
     y: 75,
     width: 110,
     height: 70,
-    details: "Receptionist manually types patient data from the paper form into the Electronic Health Record system. Average duration: 4 minutes.",
-    role: "Receptionist",
+    details: "The engineer inspects raw data inside Excel, manually deletes irrelevant columns, replaces blank rows with NULL placeholders, and fixes date casting structures. Average duration: 25 minutes.",
+    role: "Data Engineer",
     status: "bottleneck"
   },
   {
-    id: "phone-verify",
-    label: "Verify Insurance via Phone",
+    id: "manual-sql",
+    label: "Write & Run SQL Inserts",
     type: "task",
     x: 400,
     y: 75,
     width: 110,
     height: 70,
-    details: "Receptionist calls insurance provider clearinghouse to verify eligibility. Average duration: 12 minutes. Major delay source.",
-    role: "Receptionist",
+    details: "Writes ad-hoc INSERT statements using script templates. Prone to script syntax failures, primary key violations, and database column mismatch crashes. Average duration: 15 minutes.",
+    role: "Data Engineer",
     status: "bottleneck"
   },
   {
-    id: "gateway-eligible",
-    label: "Eligible?",
+    id: "gateway-errors",
+    label: "SQL Clashes?",
     type: "gateway",
     x: 550,
     y: 90,
     width: 40,
     height: 40,
-    details: "Conditional check: Does the patient have active coverage matching the scheduled provider?",
-    role: "Receptionist"
+    details: "Conditional check: Did any raw row trigger primary key conflicts, duplicate records, or foreign key database constraint failures?",
+    role: "Database"
   },
   {
-    id: "billing-reconcile",
-    label: "Reconcile Churn & Billing",
+    id: "manual-debug",
+    label: "Debug DB Constraints",
     type: "task",
     x: 630,
     y: 170,
     width: 110,
     height: 70,
-    details: "If ineligible, receptionist must manually coordinate with patient to retrieve alternative cards, causing delays or booking cancellation.",
-    role: "Receptionist",
+    details: "Engineer scans server log traces to spot offending rows, manually updates the CSV file structure, cleans partially loaded tables, and re-executes. Average duration: 30 minutes.",
+    role: "Data Engineer",
     status: "standard"
   },
   {
-    id: "checkin-complete",
-    label: "Complete Check-in",
+    id: "manual-bench",
+    label: "Run Aggregations",
     type: "task",
     x: 630,
     y: 75,
     width: 110,
     height: 70,
-    details: "Patient check-in is complete, patient takes a seat in the waiting area.",
-    role: "Receptionist",
+    details: "Executes calculation scripts manually to build salary histograms, rank top paying employers, and update static data tables. Average duration: 15 minutes.",
+    role: "Data Engineer",
     status: "standard"
   },
   {
     id: "end",
-    label: "Intake Done",
+    label: "Ingestion Done",
     type: "end",
     x: 780,
     y: 95,
     width: 30,
     height: 30,
-    details: "Patient is queued in the waiting room to see the doctor.",
+    details: "Data loading process complete. Telemetry metrics are loaded and Power BI dashboard is refreshed manually after ~1.5 hours of manual work.",
     role: "System"
   }
 ];
 
 const TO_BE_STEPS: ProcessStep[] = [
   {
-    id: "etl-pipeline",
-    label: "Automated ETL Pipeline",
-    type: "task",
-    x: 320,
+    id: "start",
+    label: "ETL Triggered",
+    type: "start",
+    x: 40,
     y: 95,
-    width: 240,
-    height: 110,
-    details: "Background Celery ETL pipeline downloads and ingests raw CSV datasets (see rask.py) — automated data enrichment and normalization.",
+    width: 30,
+    height: 30,
+    details: "Celery beats or an administrator manual trigger starts the CSVETLPipeline job to process the raw dataset telemetry.",
+    role: "Celery"
+  },
+  {
+    id: "download",
+    label: "Download & Extract Data",
+    type: "task",
+    x: 100,
+    y: 75,
+    width: 100,
+    height: 70,
+    details: "Downloads the raw zip file or folder from Google Drive (defined in RAW_DATA_ZIP_URL env var). It handles Drive virus scanner warning pages, scrapes folder files, and extracts them into the core/data/raw staging directory.",
     role: "System",
     status: "automated",
     substeps: [
-      { id: 's1', title: 'Check config', details: 'Read RAW_DATA_ZIP_URL environment variable and local data paths.' },
-      { id: 's2', title: 'Resolve source', details: 'Detect URL type (direct ZIP, Google Drive folder, or individual CSVs).' },
-      { id: 's3', title: 'Download files', details: 'Download ZIP or CSVs; handle Google Drive confirmation pages and large-file flows.' },
-      { id: 's4', title: 'Extract & stage', details: 'Extract ZIP to raw data directory and stage CSVs for parsing.' },
-      { id: 's5', title: 'Parse & clean', details: 'Parse CSVs with pandas, normalize types, and run clean_records for NaN handling.' },
-      { id: 's6', title: 'Enrich & normalize', details: 'Run normalization utilities (resolve_company_ids, normalize_api_salary, generate_deterministic_id).' },
-      { id: 's7', title: 'Chunked DB load', details: 'Insert/update rows in chunks to avoid DB constraints; track loaded IDs to prevent duplicates.' },
-      { id: 's8', title: 'Post-processing', details: 'Run benchmark imports, salary aggregations, and any API prediction jobs.' },
-      { id: 's9', title: 'Logging & fallback', details: 'Log progress, handle errors, and apply fallback direct-download attempts when needed.' },
-      { id: 's10', title: 'Cleanup', details: 'Remove temp zip files and mark pipeline run complete.' }
+      { id: 's1', title: 'Verify Config', details: 'Reads RAW_DATA_ZIP_URL env variable and local storage paths.' },
+      { id: 's2', title: 'Google Drive Scrape', details: 'Scrapes folder page HTML to locate ZIP or CSV files to bypass limits.' },
+      { id: 's3', title: 'Bypass GDrive warning', details: 'Extracts token and confirmation keys for large file warning pages.' },
+      { id: 's4', title: 'Extraction', details: 'Unzips source archive into core/data/raw/ directory structure.' }
     ]
+  },
+  {
+    id: "ingest-refs",
+    label: "Ingest Reference Data",
+    type: "task",
+    x: 230,
+    y: 75,
+    width: 100,
+    height: 70,
+    details: "Loads raw reference metadata from industries.csv and skills.csv. It cleans strings, removes duplicates, validates PKs, and performs chunked bulk inserts (ignore_conflicts=True) to avoid constraint failures.",
+    role: "System",
+    status: "automated",
+    substeps: [
+      { id: 's1', title: 'Parse CSV in chunks', details: 'Reads industries.csv and skills.csv in chunks of 2,000 using pandas.' },
+      { id: 's2', title: 'Type casting', details: 'Parses integer IDs and casts skill codes to short strings.' },
+      { id: 's3', title: 'Conflict check', details: 'Filters out IDs that are already present in the database.' },
+      { id: 's4', title: 'Bulk Insert', details: 'Calls bulk_create to batch insert records and save database roundtrips.' }
+    ]
+  },
+  {
+    id: "ingest-companies",
+    label: "Ingest Company Profiles",
+    type: "task",
+    x: 360,
+    y: 75,
+    width: 100,
+    height: 70,
+    details: "Reads companies.csv, company_industries.csv, company_specialities.csv, and employee_counts.csv. Resolves company IDs deterministically via generate_deterministic_id(name) to prevent duplicate profiles.",
+    role: "System",
+    status: "automated",
+    substeps: [
+      { id: 's1', title: 'Resolve IDs', details: 'Generates deterministic IDs based on company names to avoid clashes.' },
+      { id: 's2', title: 'Process profiles', details: 'Batch cleans and parses company metadata in chunks.' },
+      { id: 's3', title: 'Company Relations', details: 'Populates CompanyIndustry and CompanySpecialty lookup tables.' },
+      { id: 's4', title: 'Auditing History', details: 'Saves employee history counts for company scale analysis.' }
+    ]
+  },
+  {
+    id: "ingest-jobs",
+    label: "Ingest Job Postings",
+    type: "task",
+    x: 490,
+    y: 75,
+    width: 100,
+    height: 70,
+    details: "Parses postings.csv, job_skills.csv, job_industries.csv, benefits.csv, and salaries.csv. Cleans descriptions from raw HTML, infers experience levels, and normalizes compensation details.",
+    role: "System",
+    status: "automated",
+    substeps: [
+      { id: 's1', title: 'HTML Sanitization', details: 'Cleans postings descriptions of raw HTML script tags.' },
+      { id: 's2', title: 'Experience Inference', details: 'Infers experience level (Junior, Mid, Senior) from description texts.' },
+      { id: 's3', title: 'Salaries Normalization', details: 'Normalizes hourly vs yearly compensation values to average salaries.' },
+      { id: 's4', title: 'Lookup Relations', details: 'Maps skills, benefits, and target industries to job postings.' }
+    ]
+  },
+  {
+    id: "benchmarks",
+    label: "Compute Benchmarks",
+    type: "task",
+    x: 620,
+    y: 75,
+    width: 100,
+    height: 70,
+    details: "Computes and loads DataAnalystBenchmark and DataScienceSalaryBenchmark. Aggregates salary histories, compiles histograms, ranks top paying companies, and trains predictions.",
+    role: "System",
+    status: "success",
+    substeps: [
+      { id: 's1', title: 'Aggregate History', details: 'Calculates average salary trends across years.' },
+      { id: 's2', title: 'Build Histograms', details: 'Generates salary frequency bins for salary distribution maps.' },
+      { id: 's3', title: 'Company Ranking', details: 'Identifies top 10 companies by average compensation.' },
+      { id: 's4', title: 'Prediction Models', details: 'Computes future salary predictions using linear regressions.' }
+    ]
+  },
+  {
+    id: "end",
+    label: "Load Complete",
+    type: "end",
+    x: 750,
+    y: 95,
+    width: 30,
+    height: 30,
+    details: "All CSV source files processed, cleaned, and loaded into the database. Staging logs are closed, and the Celery task reports success.",
+    role: "System"
   }
 ];
 
@@ -150,44 +238,41 @@ export default function BpmnViewer() {
     if (viewMode === "AS_IS") {
       return (
         <>
-          {/* Start -> Form Fill */}
+          {/* Start -> Download */}
           <path d="M 70 110 L 110 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* Form Fill -> Transcribe */}
+          {/* Download -> Clean */}
           <path d="M 210 110 L 250 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* Transcribe -> Phone Verify */}
-          <path d="M 360 110 L 400 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* Phone Verify -> Gateway */}
-          <path d="M 510 110 L 550 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* Gateway -> Checkin (Yes) */}
+          {/* Clean -> SQL Load */}
+          <path d="M 361 110 L 400 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* SQL Load -> Gateway */}
+          <path d="M 511 110 L 550 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* Gateway -> Run Bench (No clashes) */}
           <path d="M 590 110 L 630 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          <text x="598" y="102" fill="#10b981" className="text-[10px] font-bold">Yes</text>
-          {/* Gateway -> Reconcile (No) */}
+          <text x="593" y="102" fill="#10b981" className="text-[8px] font-bold">No Clashes</text>
+          {/* Gateway -> Debug Clashes (Yes) */}
           <path d="M 570 130 L 570 205 L 630 205" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          <text x="578" y="152" fill="#ef4444" className="text-[10px] font-bold">No</text>
-          {/* Reconcile -> Checkin */}
+          <text x="578" y="152" fill="#ef4444" className="text-[8px] font-bold">Clashes</text>
+          {/* Debug -> Run Bench */}
           <path d="M 740 205 L 760 205 L 760 130 L 740 130" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* Checkin -> End */}
+          {/* Run Bench -> End */}
           <path d="M 740 110 L 780 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
         </>
       );
     } else {
       return (
         <>
-          {/* Start -> Submit Digital Form */}
-          <path d="M 70 110 L 110 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* Submit -> API Verification */}
-          <path d="M 225 110 L 260 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* no connections in simplified TO-BE (only automated ETL node) */}
-          {/* Gateway -> Auto Checkin (Yes) */}
-          <path d="M 460 110 L 500 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          <text x="468" y="102" fill="#10b981" className="text-[10px] font-bold">Yes</text>
-          {/* Gateway -> Reception Triage (No) */}
-          <path d="M 440 130 L 440 205 L 500 205" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          <text x="448" y="152" fill="#ef4444" className="text-[10px] font-bold">No</text>
-          {/* Reception Triage -> Auto Checkin */}
-          <path d="M 610 205 L 630 205 L 630 130 L 610 130" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-          {/* Auto Checkin -> End */}
-          <path d="M 610 110 L 650 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* Start -> Download */}
+          <path d="M 70 110 L 100 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* Download -> Ingest Refs */}
+          <path d="M 200 110 L 230 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* Ingest Refs -> Ingest Companies */}
+          <path d="M 330 110 L 360 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* Ingest Companies -> Ingest Jobs */}
+          <path d="M 460 110 L 490 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* Ingest Jobs -> Compute Benchmarks */}
+          <path d="M 590 110 L 620 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+          {/* Compute Benchmarks -> End */}
+          <path d="M 720 110 L 750 110" className="stroke-slate-400 dark:stroke-slate-600" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
         </>
       );
     }
@@ -444,15 +529,15 @@ export default function BpmnViewer() {
                 </div>
                 <h5 className="text-base font-bold text-foreground mb-2">{activeStep.label}</h5>
                 <p className="text-xs text-text-muted leading-relaxed">{activeStep.details}</p>
-                {/* ETL step-by-step panel */}
-                {activeStep.id === 'etl-pipeline' && activeStep.substeps && (
-                  <div className="mt-3">
-                    <h6 className="text-[11px] font-bold text-text-muted mb-2">Automated ETL Pipeline — Step-by-step</h6>
-                    <ol className="text-[12px] text-text-muted list-decimal list-inside space-y-2">
+                {/* Task step-by-step checklist panel */}
+                {activeStep.substeps && (
+                  <div className="mt-3 border-t border-card-border/60 pt-3">
+                    <h6 className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 mb-2 uppercase tracking-wide">Tasks Checklist / Steps</h6>
+                    <ol className="text-[11px] text-text-muted list-decimal list-inside space-y-1.5">
                       {activeStep.substeps.map((s) => (
-                        <li key={s.id} className="">
-                          <div className="font-semibold text-[11px] text-foreground">{s.title}</div>
-                          <div className="text-[11px] text-text-muted">{s.details}</div>
+                        <li key={s.id} className="pl-1">
+                          <span className="font-bold text-[10.5px] text-foreground">{s.title}: </span>
+                          <span className="text-[10.5px] text-text-muted">{s.details}</span>
                         </li>
                       ))}
                     </ol>
@@ -466,17 +551,17 @@ export default function BpmnViewer() {
                     <span>⚠️ Bottleneck Diagnosis</span>
                   </div>
                   <p className="text-[11px] text-text-muted mt-1">
-                    Adds severe lag time to patient throughput and increases reception workload. Targets of TO-BE refactoring.
+                    Adds severe latency, increases manual engineering work, and is highly prone to database schema clashes or duplicate records.
                   </p>
                 </div>
               )}
               {activeStep.status === "automated" && (
                 <div className="bg-sky-500/5 border border-sky-500/25 rounded-lg p-3 mt-4">
                   <div className="text-xs font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
-                    <span>⚡ Process Optimization</span>
+                    <span>⚡ Process Automation</span>
                   </div>
                   <p className="text-[11px] text-text-muted mt-1">
-                    Replaced physical queues with asynchronous digital handshakes, reducing waiting queue overhead to nearly zero.
+                    Executed asynchronously in the background by Celery workers in chunks of 2,000 records. Zero manual overhead, automated cleaning, and self-correcting duplication.
                   </p>
                 </div>
               )}

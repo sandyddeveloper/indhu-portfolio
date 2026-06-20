@@ -8,23 +8,22 @@ import InteractiveSqlSandbox from "./components/InteractiveSqlSandbox";
 import DashboardSimulator from "./components/DashboardSimulator";
 import TestimonialsCarousel from "./components/TestimonialsCarousel";
 import ContactForm from "./components/ContactForm";
+import SplashScreen from "./components/SplashScreen";
 
 const navItems = [
   { id: "summary", label: "Professional Summary" },
   { id: "competencies", label: "Core Competencies" },
   { id: "experience", label: "Work Experience" },
-  // { id: "case-studies", label: "Case Studies" },
   { id: "bpmn-analysis", label: "Process Flow (BPMN)" },
-  // { id: "deliverables", label: "Sample Deliverables" },
   { id: "data-showcase", label: "Data & BI Showcase" },
   { id: "certifications", label: "Certifications" },
-  // { id: "testimonials", label: "Testimonials" },
   { id: "contact", label: "Contact Inquiries" }
 ];
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState("summary");
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [loading, setLoading] = useState(true);
 
   // Load theme from localStorage or system preference on mount
   useEffect(() => {
@@ -85,75 +84,77 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen grid-bg relative flex flex-col xl:flex-row bg-background text-foreground transition-colors duration-300">
+    <>
+      {loading && <SplashScreen theme={theme} onComplete={() => setLoading(false)} />}
+      <div className="min-h-screen grid-bg bg-background text-foreground transition-colors duration-300 flex justify-center">
+      <div className="w-full max-w-[1500px] min-[1600px]:max-w-[1600px] min-[1920px]:max-w-[1850px] min-[2560px]:max-w-[2300px] min-[3840px]:max-w-[3000px] min-[7680px]:max-w-[5000px] flex flex-col xl:flex-row relative min-h-screen">
 
       {/* Sticky Left Sidebar Navigation (Desktop) */}
       <aside className="xl:w-80 w-full xl:h-screen xl:sticky xl:top-0 bg-sidebar-bg/90 xl:border-r border-b xl:border-b-0 border-sidebar-border p-6 flex flex-col justify-between shrink-0 z-50 backdrop-blur-md transition-all duration-300">
-        <div className="space-y-8">
-          {/* Logo / Profile Brief */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-indigo-500/20">
-                  I
-                </div>
-                <div>
-                  <h1 className="text-base font-bold text-foreground tracking-tight">Indhu S</h1>
-                  <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Aspiring Business Analyst</p>
-                </div>
+        
+        {/* Logo / Profile Brief */}
+        <div className="space-y-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-indigo-500/20">
+                I
               </div>
-
-              {/* Theme Toggle Button */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 rounded-xl bg-bg-hover text-text-muted hover:text-foreground transition-colors border border-sidebar-border cursor-pointer"
-                aria-label="Toggle Theme"
-              >
-                {theme === "dark" ? (
-                  // Lucide Sun Icon
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="4" />
-                    <path d="M12 2v2" />
-                    <path d="M12 20v2" />
-                    <path d="M4.93 4.93l1.41 1.41" />
-                    <path d="M17.66 17.66l1.41 1.41" />
-                    <path d="M2 12h2" />
-                    <path d="M20 12h2" />
-                    <path d="M6.34 17.66l-1.41 1.41" />
-                    <path d="M19.07 4.93l-1.41 1.41" />
-                  </svg>
-                ) : (
-                  // Lucide Moon Icon
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                  </svg>
-                )}
-              </button>
+              <div>
+                <h1 className="text-base font-bold text-foreground tracking-tight">Indhu S</h1>
+                <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Aspiring Data Engineer</p>
+              </div>
             </div>
 
-            <p className="text-[11px] text-text-muted leading-relaxed">
-              Aspiring Data Engineer with expertise in SQL, ETL pipeline development, data modeling, and Power BI dashboards, focused on transforming raw data into reliable, scalable, and actionable insights.
-            </p>
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl bg-bg-hover text-text-muted hover:text-foreground transition-colors border border-sidebar-border cursor-pointer"
+              aria-label="Toggle Theme"
+            >
+              {theme === "dark" ? (
+                // Lucide Sun Icon
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2" />
+                  <path d="M12 20v2" />
+                  <path d="M4.93 4.93l1.41 1.41" />
+                  <path d="M17.66 17.66l1.41 1.41" />
+                  <path d="M2 12h2" />
+                  <path d="M20 12h2" />
+                  <path d="M6.34 17.66l-1.41 1.41" />
+                  <path d="M19.07 4.93l-1.41 1.41" />
+                </svg>
+              ) : (
+                // Lucide Moon Icon
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              )}
+            </button>
           </div>
 
-          {/* Navigation Items */}
-          <nav className="hidden xl:flex flex-col gap-1">
-            {navItems.map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={() => setActiveSection(item.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2.5 ${activeSection === item.id
-                  ? "bg-indigo-600/10 text-accent-primary border-l-2 border-accent-primary"
-                  : "text-text-muted hover:text-foreground hover:bg-bg-hover"
-                  }`}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${activeSection === item.id ? "bg-accent-primary" : "bg-slate-400 dark:bg-slate-600"}`} />
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          <p className="text-[11px] text-text-muted leading-relaxed">
+            Aspiring Data Engineer with expertise in SQL, ETL pipeline development, data modeling, and Power BI dashboards, focused on transforming raw data into reliable, scalable, and actionable insights.
+          </p>
         </div>
+
+        {/* Navigation Items - Centered vertically and filled beautifully */}
+        <nav className="hidden xl:flex flex-col gap-2 py-6 my-auto flex-grow justify-center">
+          {navItems.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              onClick={() => setActiveSection(item.id)}
+              className={`px-4 py-2.5 rounded-xl text-xs sm:text-[13px] font-bold transition-all flex items-center gap-3 border ${activeSection === item.id
+                ? "bg-indigo-650/10 text-indigo-650 dark:text-indigo-400 border-indigo-500/20 shadow-xs"
+                : "text-text-muted hover:text-foreground hover:bg-bg-hover border-transparent"
+                }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeSection === item.id ? "bg-indigo-600 dark:bg-indigo-400 scale-125" : "bg-slate-400 dark:bg-slate-600 scale-75"}`} />
+              {item.label}
+            </a>
+          ))}
+        </nav>
 
         {/* Sidebar Footer */}
         <div className="hidden xl:flex flex-col gap-4 border-t border-sidebar-border pt-6">
@@ -184,7 +185,7 @@ export default function Home() {
       </aside>
 
       {/* Main Scrollable Canvas */}
-      <main className="flex-grow p-6 md:p-12 xl:p-16 max-w-[1400px] 2xl:max-w-[1800px] 3xl:max-w-[2200px] w-full mx-auto space-y-24 overflow-y-auto pb-32 xl:pb-16">
+      <main className="flex-grow p-6 md:p-12 xl:p-16 w-full space-y-24 overflow-y-auto pb-28 xl:pb-0">
 
         {/* SECTION 1: HERO & SUMMARY */}
         <section id="summary" className="space-y-8 pt-4">
@@ -369,7 +370,7 @@ export default function Home() {
           <div className="space-y-1.5">
             <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Modeling</span>
             <h3 className="text-2xl font-bold text-foreground">Process Flow Gap Analysis</h3>
-            <p className="text-xs text-text-muted">Interactive workflow diagram showcasing operational re-engineering of clinical intake pipelines.</p>
+            <p className="text-xs text-text-muted">Interactive workflow diagram showcasing operational re-engineering of manual dataset ingestion to Celery ETL automation.</p>
           </div>
           <BpmnViewer />
         </section>
@@ -455,7 +456,7 @@ export default function Home() {
         </section>
 
         {/* Main Footer Section */}
-        <footer className="border-t border-card-border pt-12 mt-20 pb-8 transition-colors duration-300">
+        <footer className="border-t border-card-border pt-12 mt-20 pb-0 transition-colors duration-300">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {/* Column 1: Info */}
             <div className="md:col-span-2 space-y-4">
@@ -463,7 +464,7 @@ export default function Home() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-base shadow-md">
                   I
                 </div>
-                <h4 className="text-sm font-bold text-foreground">Indhu S | Aspiring Business Analyst</h4>
+                <h4 className="text-sm font-bold text-foreground">Indhu S | Aspiring Analyst</h4>
               </div>
               <p className="text-xs text-text-muted leading-relaxed max-w-sm">
                 Gathering requirements, auditing operational records, and engineering SQL databases and Power BI systems for operational clarity.
@@ -477,10 +478,9 @@ export default function Home() {
                 <a href="#summary" className="text-text-muted hover:text-foreground transition-colors">Summary</a>
                 <a href="#competencies" className="text-text-muted hover:text-foreground transition-colors">Skills</a>
                 <a href="#experience" className="text-text-muted hover:text-foreground transition-colors">Experience</a>
-                <a href="#case-studies" className="text-text-muted hover:text-foreground transition-colors">Case Studies</a>
                 <a href="#bpmn-analysis" className="text-text-muted hover:text-foreground transition-colors">BPMN Flow</a>
-                <a href="#deliverables" className="text-text-muted hover:text-foreground transition-colors">Deliverables</a>
                 <a href="#data-showcase" className="text-text-muted hover:text-foreground transition-colors">Analytics</a>
+                <a href="#certifications" className="text-text-muted hover:text-foreground transition-colors">Certifications</a>
                 <a href="#contact" className="text-text-muted hover:text-foreground transition-colors">Contact</a>
               </div>
             </div>
@@ -508,13 +508,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="border-t border-card-border mt-12 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[10px] text-text-muted font-bold uppercase tracking-wider">
-            <div>
-              © 2026 Indhu S Portfolio. All rights reserved.
-            </div>
-            <div>
-              Designed with Next.js & Tailwind CSS
-            </div>
+          <div className="border-t border-card-border mt-12 pt-6 text-center text-[10px] text-text-muted font-bold uppercase tracking-wider">
+            © 2026 Indhu S Portfolio. All rights reserved.
           </div>
         </footer>
 
@@ -532,11 +527,11 @@ export default function Home() {
             </svg>
             <span>Work</span>
           </a>
-          <a href="#case-studies" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
+          <a href="#bpmn-analysis" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
-            <span>Cases</span>
+            <span>BPMN</span>
           </a>
           <a href="#data-showcase" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -554,6 +549,8 @@ export default function Home() {
         </div>
 
       </main>
+      </div>
     </div>
+    </>
   );
 }
