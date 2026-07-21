@@ -37,31 +37,28 @@ export default function DeliverablesViewer() {
       <div className="flex border-b border-card-border bg-sidebar-bg/60 p-2 md:p-4 gap-2 transition-colors duration-300">
         <button
           onClick={() => setActiveTab("WIREFRAME")}
-          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
-            activeTab === "WIREFRAME"
+          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === "WIREFRAME"
               ? "bg-indigo-600 text-white shadow-md"
               : "text-text-muted hover:text-foreground hover:bg-bg-hover"
-          }`}
+            }`}
         >
           📱 Portal Wireframe Mockup
         </button>
         <button
           onClick={() => setActiveTab("BRD")}
-          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
-            activeTab === "BRD"
+          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === "BRD"
               ? "bg-indigo-600 text-white shadow-md"
               : "text-text-muted hover:text-foreground hover:bg-bg-hover"
-          }`}
+            }`}
         >
           📄 BRD / FRD Document
         </button>
         <button
           onClick={() => setActiveTab("KANBAN")}
-          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${
-            activeTab === "KANBAN"
+          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === "KANBAN"
               ? "bg-indigo-600 text-white shadow-md"
               : "text-text-muted hover:text-foreground hover:bg-bg-hover"
-          }`}
+            }`}
         >
           📋 User Stories Board
         </button>
@@ -76,7 +73,7 @@ export default function DeliverablesViewer() {
               <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Interactive Spec</span>
               <h4 className="text-lg font-bold text-foreground mt-1 mb-3">UI Wireframe Simulator</h4>
               <p className="text-xs text-text-muted leading-relaxed mb-4">
-                This simulator showcases a low-fidelity wireframe designed for the <strong>Patient Intake Kiosk / Mobile App</strong>. 
+                This simulator showcases a low-fidelity wireframe designed for the <strong>Patient Intake Kiosk / Mobile App</strong>.
                 It validates requirements for instant OCR scanning and API validation before check-in is complete.
               </p>
               <div className="bg-background border border-card-border rounded-xl p-4 space-y-3 transition-colors duration-300">

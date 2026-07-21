@@ -30,7 +30,7 @@ const DETAILED_LOGS = [
   { p: 56, type: "INFO", msg: "Sanitizing HTML markup tags from job_description text blocks." },
   { p: 61, type: "SUCCESS", msg: "Regex cleansing of postings.csv text attributes completed (2,450 records processed)." },
   { p: 66, type: "INFO", msg: "Normalizing salary currencies to USD base using daily API reference tables." },
-  { p: 72, type: "INFO", msg: "Calculating metric quantiles and salary benchmarks for Analyst positions." },
+  { p: 72, type: "INFO", msg: "Calculating metric quantiles and salary benchmarks." },
   { p: 77, type: "SUCCESS", msg: "Transformations successfully committed. Intermediate DataFrames validated." },
   { p: 81, type: "INFO", msg: "Load stage triggered: Preparing batch INSERT operations." },
   { p: 86, type: "INFO", msg: "Writing reference data: skills (21 rows), industries (15 rows)." },

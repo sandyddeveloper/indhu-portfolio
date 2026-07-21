@@ -101,7 +101,7 @@ export default function InteractiveSqlSandbox() {
       {/* Selector Area */}
       <div className="p-5 border-b border-card-border bg-sidebar-bg/40 flex flex-col md:flex-row gap-5 justify-between items-start md:items-center transition-colors duration-300">
         <div className="space-y-1">
-          <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Data Analyst Sandbox</span>
+          <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Interactive SQL Sandbox</span>
           <h4 className="text-lg font-bold text-foreground">Interactive SQL Analytics Playground</h4>
           <p className="text-xs text-text-muted max-w-xl">
             Choose a business logic scenario below. Read the SQL queries written to audit systems, and execute them to see live data telemetry.

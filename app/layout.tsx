@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Indhu S | Aspiring Analyst Portfolio",
-  description: "Aspiring Analyst portfolio demonstrating expertise in requirements gathering, operational documentation, database systems (SQL), and Power BI data analysis.",
-  keywords: ["Analyst", "Aspiring Analyst", "Requirements Gathering", "Operational Documentation", "SQL Queries", "Power BI", "Data Analytics", "BCA", "Document Record Management"],
+  title: "Indhu S | Portfolio",
+  description: "Professional portfolio demonstrating expertise in Python, SQL, Excel, Power BI, requirements gathering, and data analysis.",
+  keywords: ["Data Professional", "Requirements Gathering", "Operational Documentation", "SQL Queries", "Power BI", "Python", "GitHub", "Data Analytics", "BCA"],
   authors: [{ name: "Indhu S" }],
 };
 
