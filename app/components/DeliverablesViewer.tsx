@@ -37,30 +37,39 @@ export default function DeliverablesViewer() {
       <div className="flex border-b border-card-border bg-sidebar-bg/60 p-2 md:p-4 gap-2 transition-colors duration-300">
         <button
           onClick={() => setActiveTab("WIREFRAME")}
-          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === "WIREFRAME"
-              ? "bg-indigo-600 text-white shadow-md"
-              : "text-text-muted hover:text-foreground hover:bg-bg-hover"
+          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${activeTab === "WIREFRAME"
+              ? "bg-purple-700 text-white shadow-md"
+              : "text-black dark:text-slate-200 hover:text-purple-800 hover:bg-bg-hover"
             }`}
         >
-          📱 Portal Wireframe Mockup
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          <span>Portal Wireframe Mockup</span>
         </button>
         <button
           onClick={() => setActiveTab("BRD")}
-          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === "BRD"
-              ? "bg-indigo-600 text-white shadow-md"
-              : "text-text-muted hover:text-foreground hover:bg-bg-hover"
+          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${activeTab === "BRD"
+              ? "bg-purple-700 text-white shadow-md"
+              : "text-black dark:text-slate-200 hover:text-purple-800 hover:bg-bg-hover"
             }`}
         >
-          📄 BRD / FRD Document
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>BRD / FRD Document</span>
         </button>
         <button
           onClick={() => setActiveTab("KANBAN")}
-          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all ${activeTab === "KANBAN"
-              ? "bg-indigo-600 text-white shadow-md"
-              : "text-text-muted hover:text-foreground hover:bg-bg-hover"
+          className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer ${activeTab === "KANBAN"
+              ? "bg-purple-700 text-white shadow-md"
+              : "text-black dark:text-slate-200 hover:text-purple-800 hover:bg-bg-hover"
             }`}
         >
-          📋 User Stories Board
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span>User Stories Board</span>
         </button>
       </div>
 

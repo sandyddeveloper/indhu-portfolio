@@ -1,37 +1,45 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
-  --background: #f8fafc; /* Slate 50 */
-  --foreground: #0f172a; /* Slate 900 */
+  /* LIGHT MODE: Purple accents, white cards/surfaces, BLACK text */
+  --background: #fafafd;
+  --foreground: #000000; /* Pure black words for light mode */
   
-  --card-bg: rgba(255, 255, 255, 0.75);
-  --card-border: rgba(15, 23, 42, 0.08);
+  --card-bg: #ffffff;
+  --card-border: rgba(138, 87, 211, 0.3);
   --sidebar-bg: #ffffff;
-  --sidebar-border: rgba(15, 23, 42, 0.08);
-  --text-muted: #475569; /* Slate 600 */
-  --bg-hover: rgba(15, 23, 42, 0.04);
-  --accent-primary: #4f46e5; /* Indigo 600 */
-  --accent-secondary: #2563eb; /* Blue 600 */
-  --accent-success: #059669; /* Emerald 600 */
+  --sidebar-border: rgba(138, 87, 211, 0.3);
+  --text-muted: #1e293b; /* Crisp dark slate for subtitles */
+  --bg-hover: rgba(138, 87, 211, 0.12);
+  --accent-primary: #7e3af2; /* Deep purple */
+  --accent-lilac: #c8b6e2; /* Pastel purple pill */
+  --accent-pill: #d8c7f0;
+  --accent-secondary: #673ab7;
+  --accent-success: #059669;
   
-  --grid-color: rgba(15, 23, 42, 0.02);
+  --grid-color: rgba(138, 87, 211, 0.04);
 }
 
-:root.dark {
-  --background: #030712; /* Slate 950 */
-  --foreground: #f3f4f6; /* Slate 100 */
+.dark, :root.dark {
+  /* DARK MODE: Purple accents, deep dark purple-black background, WHITE text */
+  --background: #0f0d15;
+  --foreground: #ffffff; /* Pure white words for dark mode */
   
-  --card-bg: rgba(17, 24, 39, 0.6);
-  --card-border: rgba(255, 255, 255, 0.08);
-  --sidebar-bg: #020617; /* Slate 950 */
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --text-muted: #94a3b8; /* Slate 400 */
-  --bg-hover: rgba(255, 255, 255, 0.04);
-  --accent-primary: #6366f1; /* Indigo 500 */
-  --accent-secondary: #3b82f6; /* Blue 500 */
-  --accent-success: #10b981; /* Emerald 500 */
+  --card-bg: #181524;
+  --card-border: rgba(200, 182, 226, 0.2);
+  --sidebar-bg: #14111d;
+  --sidebar-border: rgba(200, 182, 226, 0.2);
+  --text-muted: #cbd5e1; /* Crisp light slate for dark mode subtitles */
+  --bg-hover: rgba(200, 182, 226, 0.15);
+  --accent-primary: #b388ff;
+  --accent-lilac: #c8b6e2;
+  --accent-pill: #4a3766;
+  --accent-secondary: #7c4dff;
+  --accent-success: #34d399;
   
-  --grid-color: rgba(255, 255, 255, 0.015);
+  --grid-color: rgba(200, 182, 226, 0.02);
 }
 
 @theme inline {
@@ -44,12 +52,14 @@
   --color-text-muted: var(--text-muted);
   --color-bg-hover: var(--bg-hover);
   --color-accent-primary: var(--accent-primary);
+  --color-accent-lilac: var(--accent-lilac);
+  --color-accent-pill: var(--accent-pill);
   --color-accent-secondary: var(--accent-secondary);
   --color-accent-success: var(--accent-success);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
@@ -79,24 +89,24 @@ body {
 
 /* Glowing utilities */
 .glow-indigo {
-  box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(138, 87, 211, 0.12);
 }
 .dark .glow-indigo {
-  box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 40px -10px rgba(179, 136, 255, 0.2);
 }
 
 .glow-blue {
-  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.1);
 }
 .dark .glow-blue {
-  box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 40px -10px rgba(59, 130, 246, 0.2);
 }
 
 .glow-emerald {
-  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(16, 185, 129, 0.1);
 }
 .dark .glow-emerald {
-  box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.15);
+  box-shadow: 0 0 40px -10px rgba(16, 185, 129, 0.2);
 }
 
 /* Grid overlay background */
@@ -114,7 +124,7 @@ body {
   }
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 15px rgba(99, 102, 241, 0.4));
+    filter: drop-shadow(0 0 15px rgba(138, 87, 211, 0.4));
   }
 }
 .dark .animate-pulse-glow {

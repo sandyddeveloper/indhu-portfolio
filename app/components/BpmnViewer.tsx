@@ -312,26 +312,32 @@ export default function BpmnViewer() {
               setViewMode("AS_IS");
               setActiveStep(null);
             }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-black tracking-wide transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === "AS_IS"
                 ? "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20"
-                : "text-text-muted hover:text-foreground"
+                : "text-[#1e293b] dark:text-slate-200 hover:text-rose-600"
             }`}
           >
-            🔴 AS-IS (Manual & Slow)
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <circle cx="12" cy="12" r="10" strokeWidth="2.5" />
+            </svg>
+            <span>AS-IS (Manual & Slow)</span>
           </button>
           <button
             onClick={() => {
               setViewMode("TO_BE");
               setActiveStep(null);
             }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide transition-all ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-black tracking-wide transition-all flex items-center gap-1.5 cursor-pointer ${
               viewMode === "TO_BE"
                 ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                : "text-text-muted hover:text-foreground"
+                : "text-[#1e293b] dark:text-slate-200 hover:text-emerald-600"
             }`}
           >
-            🟢 TO-BE (Automated & API)
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>TO-BE (Automated & API)</span>
           </button>
         </div>
       </div>
@@ -469,15 +475,14 @@ export default function BpmnViewer() {
                 );
               }
 
-              // Standard Process Task Box
+              // Standard Task Box
               return (
                 <g
                   key={step.id}
-                  className="cursor-pointer group transition-transform duration-200"
+                  className="cursor-pointer group"
                   onClick={() => setActiveStep(step)}
                   onMouseEnter={() => setActiveStep(step)}
                 >
-                  {/* Task Box */}
                   <rect
                     x={step.x}
                     y={step.y}
@@ -486,7 +491,6 @@ export default function BpmnViewer() {
                     rx="8"
                     className={`${getFillColor(step)} ${getBorderColor(step)} transition-all duration-200`}
                   />
-                  {/* Text Container */}
                   <foreignObject
                     x={step.x + 6}
                     y={step.y + 6}
@@ -502,13 +506,28 @@ export default function BpmnViewer() {
                         {step.label}
                       </div>
                       {step.status === "bottleneck" && (
-                        <div className="text-[8px] text-rose-600 dark:text-rose-400 font-bold tracking-tight">⚠️ BOTTLENECK</div>
+                        <div className="text-[8px] text-rose-600 dark:text-rose-400 font-bold tracking-tight flex items-center gap-1">
+                          <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                          <span>BOTTLENECK</span>
+                        </div>
                       )}
                       {step.status === "automated" && (
-                        <div className="text-[8px] text-sky-600 dark:text-sky-400 font-bold tracking-tight">⚡ API AUTOMATED</div>
+                        <div className="text-[8px] text-sky-600 dark:text-sky-400 font-bold tracking-tight flex items-center gap-1">
+                          <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                          <span>API AUTOMATED</span>
+                        </div>
                       )}
                       {step.status === "success" && (
-                        <div className="text-[8px] text-emerald-600 dark:text-emerald-400 font-bold tracking-tight">✨ SUCCESS</div>
+                        <div className="text-[8px] text-emerald-600 dark:text-emerald-400 font-bold tracking-tight flex items-center gap-1">
+                          <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span>SUCCESS</span>
+                        </div>
                       )}
                     </div>
                   </foreignObject>
@@ -552,7 +571,10 @@ export default function BpmnViewer() {
               {activeStep.status === "bottleneck" && (
                 <div className="bg-rose-500/5 border border-rose-500/25 rounded-lg p-3 mt-4">
                   <div className="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
-                    <span>⚠️ Bottleneck Diagnosis</span>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>Bottleneck Diagnosis</span>
                   </div>
                   <p className="text-[11px] text-text-muted mt-1">
                     Adds severe latency, increases manual engineering work, and is highly prone to database schema clashes or duplicate records.
@@ -562,7 +584,10 @@ export default function BpmnViewer() {
               {activeStep.status === "automated" && (
                 <div className="bg-sky-500/5 border border-sky-500/25 rounded-lg p-3 mt-4">
                   <div className="text-xs font-bold text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
-                    <span>⚡ Process Automation</span>
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    <span>Process Automation</span>
                   </div>
                   <p className="text-[11px] text-text-muted mt-1">
                     Executed asynchronously in the background by Celery workers in chunks of 2,000 records. Zero manual overhead, automated cleaning, and self-correcting duplication.

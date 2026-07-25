@@ -1,24 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import CaseStudyExplorer from "./components/CaseStudyExplorer";
+import HeaderNav from "./components/HeaderNav";
+import HeroIllustration from "./components/HeroIllustration";
+import ToolLogos from "./components/ToolLogos";
 import BpmnViewer from "./components/BpmnViewer";
-import DeliverablesViewer from "./components/DeliverablesViewer";
 import InteractiveSqlSandbox from "./components/InteractiveSqlSandbox";
 import DashboardSimulator from "./components/DashboardSimulator";
 import TestimonialsCarousel from "./components/TestimonialsCarousel";
 import ContactForm from "./components/ContactForm";
 import SplashScreen from "./components/SplashScreen";
-
-const navItems = [
-  { id: "summary", label: "Professional Summary" },
-  { id: "competencies", label: "Core Competencies" },
-  { id: "experience", label: "Work Experience" },
-  { id: "bpmn-analysis", label: "Process Flow (BPMN)" },
-  { id: "data-showcase", label: "Data & BI Showcase" },
-  { id: "certifications", label: "Certifications" },
-  { id: "contact", label: "Contact Inquiries" }
-];
 
 interface AnimatedCounterProps {
   value: number;
@@ -45,21 +36,21 @@ function AnimatedCounter({
       return;
     }
 
-    const steps = 60; // 60 updates over duration
+    const steps = 60;
     const stepTime = duration / steps;
     let currentStep = 0;
 
     const timer = setInterval(() => {
       currentStep++;
       const progress = currentStep / steps;
-      const easeProgress = 1 - Math.pow(1 - progress, 3); // cubic ease out
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
       const currentCount = easeProgress * value;
 
       setCount(currentCount);
 
       if (currentStep >= steps) {
         clearInterval(timer);
-        setCount(value); // ensure exact landing on final value
+        setCount(value);
       }
     }, stepTime);
 
@@ -81,20 +72,19 @@ function AnimatedCounter({
 }
 
 export default function Home() {
-  const [activeSection, setActiveSection] = useState("summary");
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [activeSection, setActiveSection] = useState("home");
+  const [theme, setTheme] = useState<"dark" | "light">("light");
   const [loading, setLoading] = useState(true);
   const [statsVisible, setStatsVisible] = useState(false);
 
-  // Load theme from localStorage or system preference on mount
+  // Load theme preference
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") as "dark" | "light";
-    if (savedTheme) {
-      setTheme(savedTheme);
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    if (savedTheme === "dark") {
       setTheme("dark");
     } else {
       setTheme("light");
+      localStorage.setItem("theme", "light");
     }
   }, []);
 
@@ -109,38 +99,29 @@ export default function Home() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // Highlight active section on scroll using IntersectionObserver
+  // Track active section on scroll
   useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: "-25% 0px -55% 0px", // triggers when section occupies the active scroll window
-      threshold: 0
-    };
-
-    const handleIntersection = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+    const sectionIds = ["home", "about", "projects", "certifications", "contact"];
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 200;
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.offsetTop;
+          const height = el.offsetHeight;
+          if (scrollPosition >= top && scrollPosition < top + height) {
+            setActiveSection(id);
+            break;
+          }
         }
-      });
+      }
     };
 
-    const observer = new IntersectionObserver(handleIntersection, observerOptions);
-
-    navItems.forEach((item) => {
-      const el = document.getElementById(item.id);
-      if (el) observer.observe(el);
-    });
-
-    return () => {
-      navItems.forEach((item) => {
-        const el = document.getElementById(item.id);
-        if (el) observer.unobserve(el);
-      });
-    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Trigger stats animation only when stats grid is scrolled into viewport (below fold on mobile)
+  // Trigger stats counter animation when scrolled into view
   useEffect(() => {
     if (loading) return;
     const el = document.getElementById("stats-grid");
@@ -153,13 +134,11 @@ export default function Home() {
           observer.unobserve(el);
         }
       },
-      { threshold: 0.15 } // trigger when 15% of grid is visible
+      { threshold: 0.15 }
     );
 
     observer.observe(el);
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [loading]);
 
   const toggleTheme = () => {
@@ -169,528 +148,410 @@ export default function Home() {
   return (
     <>
       {loading && <SplashScreen theme={theme} onComplete={() => setLoading(false)} />}
-      <div className="min-h-screen grid-bg bg-background text-foreground transition-colors duration-300 flex justify-center">
-        <div className="w-full max-w-[1500px] min-[1600px]:max-w-[1600px] min-[1920px]:max-w-[1850px] min-[2560px]:max-w-[2300px] min-[3840px]:max-w-[3000px] min-[7680px]:max-w-[5000px] flex flex-col xl:flex-row relative min-h-screen">
 
-          {/* Sticky Left Sidebar Navigation (Desktop) */}
-          <aside className={`xl:w-80 w-full xl:h-screen xl:sticky xl:top-0 bg-sidebar-bg/90 xl:border-r border-b xl:border-b-0 border-sidebar-border p-6 flex flex-col justify-between shrink-0 z-50 backdrop-blur-md transition-all duration-500 ${loading ? "opacity-0 pointer-events-none" : "opacity-100 animate-fade-in"
-            }`}>
+      <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+        {/* Sticky Top Header Navigation */}
+        <HeaderNav theme={theme} onToggleTheme={toggleTheme} activeSection={activeSection} />
 
-            {/* Logo / Profile Brief */}
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-indigo-500/20">
-                    I
-                  </div>
-                  <div>
-                    <h1 className="text-base font-bold text-foreground tracking-tight">Indhu S</h1>
-                    <p className="text-[10px] text-accent-primary font-bold uppercase tracking-widest">Data Professional</p>
-                  </div>
+        <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 py-8 transition-all duration-500 ${loading ? "opacity-0" : "opacity-100 animate-fade-in"}`}>
+
+          {/* ================= HERO SECTION (MATCHING SCREENSHOT) ================= */}
+          <section id="home" className="pt-4 pb-8 border-b border-card-border">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+              {/* Left Column: Bio, Social Buttons, Resume Pill Button */}
+              <div className="lg:col-span-7 space-y-8">
+                <div className="space-y-4">
+                  <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-black dark:text-white tracking-tight font-sans">
+                    Indhumathi M
+                  </h1>
+
+                  <p className="text-base sm:text-lg lg:text-xl text-[#1e293b] dark:text-[#f8fafc] leading-relaxed font-bold max-w-2xl">
+                    A <strong className="font-black text-purple-900 dark:text-purple-300">Data Analyst</strong> skilled in <strong className="font-black text-purple-900 dark:text-purple-300">Power BI, SQL, and Excel</strong>, focused on creating interactive dashboards and insights that drive data-based decisions.
+                  </p>
                 </div>
 
-                {/* Theme Toggle Button */}
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-xl bg-bg-hover text-text-muted hover:text-foreground transition-colors border border-sidebar-border cursor-pointer"
-                  aria-label="Toggle Theme"
-                >
-                  {theme === "dark" ? (
-                    // Lucide Sun Icon
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <circle cx="12" cy="12" r="4" />
-                      <path d="M12 2v2" />
-                      <path d="M12 20v2" />
-                      <path d="M4.93 4.93l1.41 1.41" />
-                      <path d="M17.66 17.66l1.41 1.41" />
-                      <path d="M2 12h2" />
-                      <path d="M20 12h2" />
-                      <path d="M6.34 17.66l-1.41 1.41" />
-                      <path d="M19.07 4.93l-1.41 1.41" />
+                {/* Social Icon Pills (LinkedIn, Email, Document) */}
+                <div className="flex items-center gap-3">
+                  <a
+                    href="https://linkedin.com/in/indhu16"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 flex items-center justify-center text-purple-900 dark:text-purple-200 font-extrabold hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors shadow-xs"
+                    title="LinkedIn Profile"
+                  >
+                    in
+                  </a>
+                  <a
+                    href="mailto:indhusekar1609@gmail.com"
+                    className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 flex items-center justify-center text-purple-900 dark:text-purple-200 font-extrabold hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors shadow-xs"
+                    title="Email Contact"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 00-2 2z" />
                     </svg>
-                  ) : (
-                    // Lucide Moon Icon
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                  </a>
+                  <a
+                    href="https://github.com/indhusekar1609"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 border border-purple-300 dark:border-purple-700 flex items-center justify-center text-purple-900 dark:text-purple-200 font-extrabold hover:bg-purple-200 dark:hover:bg-purple-800 transition-colors shadow-xs"
+                    title="GitHub Projects"
+                  >
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                  )}
-                </button>
+                  </a>
+                </div>
+
+                {/* Soft Pastel Purple Download Resume Button */}
+                <div>
+                  <a
+                    href="mailto:indhusekar1609@gmail.com?subject=Request%20Resume%20-%20Indhumathi%20M"
+                    className="inline-flex items-center gap-3 px-6 py-3.5 rounded-xl bg-[#c8b6e2] dark:bg-[#7e57c2] text-black dark:text-white font-black text-sm hover:bg-[#b8a2d6] dark:hover:bg-[#6c46b3] transition-all shadow-sm hover:shadow-md cursor-pointer group"
+                  >
+                    <svg className="w-5 h-5 text-purple-900 dark:text-white group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Indhumathi M Resume.pdf</span>
+                  </a>
+                </div>
               </div>
 
-              <p className="text-[11px] text-text-muted leading-relaxed">
-                Detail-oriented professional with strong skills in Python, SQL, Excel, and Power BI, focused on data processing, cleaning, transformation, and analysis.
+              {/* Right Column: Hero Illustration Artwork */}
+              <div className="lg:col-span-5 flex justify-center">
+                <HeroIllustration />
+              </div>
+            </div>
+
+            {/* "Data Analytics Tools Known" Strip */}
+            <ToolLogos />
+          </section>
+
+
+          {/* ================= SECTION 2: ABOUT ME & EXPERIENCE ================= */}
+          <section id="about" className="space-y-12">
+            <div className="space-y-2">
+              <span className="text-xs font-black text-purple-800 dark:text-purple-300 uppercase tracking-widest">
+                Professional Overview
+              </span>
+              <h2 className="text-3xl font-black text-black dark:text-white">
+                About Me
+              </h2>
+            </div>
+
+            {/* Executive Bio Card */}
+            <div className="bg-card-bg p-8 rounded-2xl border border-card-border shadow-xs space-y-4">
+              <p className="text-base text-black dark:text-white leading-relaxed font-bold">
+                Motivated and detail-oriented professional with strong skills in Python, SQL, Excel, and Power BI. Possesses a solid understanding of data processing, data cleaning, transformation, and analysis, with the ability to work efficiently with structured data and relational databases. Quick learner with strong analytical, problem-solving, and communication skills, committed to delivering accurate, high-quality solutions while continuously expanding technical expertise.
               </p>
             </div>
 
-            {/* Navigation Items - Centered vertically and filled beautifully */}
-            <nav className="hidden xl:flex flex-col gap-2 py-6 my-auto flex-grow justify-center">
-              {navItems.map((item) => (
-                <a
-                  key={item.id}
-                  href={`#${item.id}`}
-                  onClick={() => setActiveSection(item.id)}
-                  className={`px-4 py-2.5 rounded-xl text-xs sm:text-[13px] font-bold transition-all flex items-center gap-3 border ${activeSection === item.id
-                    ? "bg-indigo-650/10 text-indigo-650 dark:text-indigo-400 border-indigo-500/20 shadow-xs"
-                    : "text-text-muted hover:text-foreground hover:bg-bg-hover border-transparent"
-                    }`}
-                >
-                  <span className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeSection === item.id ? "bg-indigo-600 dark:bg-indigo-400 scale-125" : "bg-slate-400 dark:bg-slate-600 scale-75"}`} />
-                  {item.label}
-                </a>
-              ))}
-            </nav>
-
-            {/* Sidebar Footer */}
-            <div className="hidden xl:flex flex-col gap-4 border-t border-sidebar-border pt-6">
-              <div className="flex gap-3">
-                <a
-                  href="https://linkedin.com/in/indhu16"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-text-muted hover:text-accent-primary transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-                  </svg>
-                </a>
-                <a
-                  href="mailto:indhusekar1609@gmail.com"
-                  className="text-text-muted hover:text-accent-primary transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 00-2 2z" />
-                  </svg>
-                </a>
+            {/* Quick Metrics Grid */}
+            <div id="stats-grid" className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:border-purple-400 transition-all">
+                <div className="text-3xl font-black text-purple-800 dark:text-purple-300">
+                  <AnimatedCounter value={1.0} decimals={1} suffix="+ Yrs" active={!loading && statsVisible} />
+                </div>
+                <div className="text-[11px] text-black dark:text-slate-200 font-extrabold uppercase tracking-wider mt-1.5">
+                  Combined Experience
+                </div>
               </div>
-              <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider">
-                © 2026 Indhu S Portfolio
+
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:border-purple-400 transition-all">
+                <div className="text-3xl font-black text-purple-800 dark:text-purple-300">
+                  <AnimatedCounter value={99.8} decimals={1} suffix="%" active={!loading && statsVisible} />
+                </div>
+                <div className="text-[11px] text-black dark:text-slate-200 font-extrabold uppercase tracking-wider mt-1.5">
+                  Document Accuracy
+                </div>
+              </div>
+
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:border-purple-400 transition-all">
+                <div className="text-3xl font-black text-purple-800 dark:text-purple-300">
+                  <AnimatedCounter value={100} decimals={0} suffix="%" active={!loading && statsVisible} />
+                </div>
+                <div className="text-[11px] text-black dark:text-slate-200 font-extrabold uppercase tracking-wider mt-1.5">
+                  HIPAA Compliance
+                </div>
+              </div>
+
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:border-purple-400 transition-all">
+                <div className="text-3xl font-black text-purple-800 dark:text-purple-300">
+                  <AnimatedCounter value={5000} decimals={0} suffix="+" active={!loading && statsVisible} />
+                </div>
+                <div className="text-[11px] text-black dark:text-slate-200 font-extrabold uppercase tracking-wider mt-1.5">
+                  Audits Completed
+                </div>
               </div>
             </div>
-          </aside>
 
-          {/* Main Scrollable Canvas */}
-          <main className={`flex-grow p-6 md:p-12 xl:p-16 w-full space-y-24 overflow-y-auto pb-28 xl:pb-0 transition-all duration-500 ${loading ? "opacity-0 pointer-events-none" : "opacity-100 animate-slide-up"
-            }`}>
-
-            {/* SECTION 1: HERO & SUMMARY */}
-            <section id="summary" className="space-y-8 pt-4">
-              <div className="space-y-4">
-                <div className="inline-block bg-indigo-500/10 text-accent-primary text-xs font-bold px-3 py-1.5 rounded-full border border-indigo-500/20 uppercase tracking-widest">
-                  Open to Explore Opportunities
+            {/* Core Competencies Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:shadow-md transition-all">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center text-purple-900 dark:text-purple-200 mb-4 font-bold">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-black text-foreground tracking-tight leading-tight max-w-4xl">
-                  Driving efficiency through <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-400 dark:from-indigo-400 dark:to-indigo-200">strategic analysis</span> and structured data.
-                </h2>
-              </div>
-
-              {/* Professional Summary */}
-              <div className="border-l-4 border-indigo-600 pl-6 max-w-3xl space-y-2">
-                <p className="text-base md:text-lg text-foreground font-medium leading-relaxed italic">
-                  Motivated and detail-oriented professional with strong skills in Python, SQL, Excel, and Power BI. Possesses a solid understanding of data processing, data cleaning, transformation, and analysis, with the ability to work efficiently with structured data and relational databases. Quick learner with strong analytical, problem-solving, and communication skills, committed to delivering accurate, high-quality solutions while continuously expanding technical expertise.
+                <h4 className="text-base font-black text-black dark:text-white mb-2">Requirements & Docs</h4>
+                <p className="text-xs text-black dark:text-slate-200 font-bold leading-relaxed mb-4">
+                  Capturing business needs, mapping operational flows (AS-IS/TO-BE), and producing BRD/FRD functional specs.
                 </p>
-              </div>
-
-              {/* Quick Stats Grid */}
-              <div id="stats-grid" className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 max-w-5xl">
-                <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-                  <div className="text-3xl font-black text-accent-primary">
-                    <AnimatedCounter value={1.0} decimals={1} suffix="+ Yrs" active={!loading && statsVisible} />
-                  </div>
-                  <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Combined Experience</div>
-                </div>
-                <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-                  <div className="text-3xl font-black text-accent-primary">
-                    <AnimatedCounter value={99.8} decimals={1} suffix="%" active={!loading && statsVisible} />
-                  </div>
-                  <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Document Accuracy</div>
-                </div>
-                <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-                  <div className="text-3xl font-black text-accent-primary">
-                    <AnimatedCounter value={100} decimals={0} suffix="%" active={!loading && statsVisible} />
-                  </div>
-                  <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">HIPAA Compliance</div>
-                </div>
-                <div className="bg-card-bg border border-card-border p-5 rounded-2xl hover:border-indigo-500/20 transition-all shadow-xs">
-                  <div className="text-3xl font-black text-accent-primary">
-                    <AnimatedCounter value={5000} decimals={0} suffix="+" active={!loading && statsVisible} />
-                  </div>
-                  <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider mt-1.5">Audits Completed</div>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Requirements", "AS-IS / TO-BE", "BRD / FRD", "BPMN 2.0", "Jira"].map((tag) => (
+                    <span key={tag} className="text-[10px] font-black bg-purple-100 dark:bg-purple-900/60 text-purple-950 dark:text-purple-200 px-2 py-0.5 rounded border border-purple-300 dark:border-purple-700">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
-            </section>
 
-            {/* SECTION 2: CORE COMPETENCIES */}
-            <section id="competencies" className="space-y-6">
-              <div className="space-y-1.5">
-                <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Skill Set</span>
-                <h3 className="text-2xl font-bold text-foreground">Core Competencies</h3>
-                <p className="text-xs text-text-muted">The tooling, methodologies, and framework capabilities I apply to deliver business value.</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Box 1 */}
-                <div className="bg-card-bg border border-card-border p-6 rounded-2xl hover:border-indigo-500/20 transition-all glow-indigo">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-accent-primary mb-4">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                    </svg>
-                  </div>
-                  <h4 className="text-sm font-bold text-foreground mb-2">Requirements & Documentation</h4>
-                  <p className="text-xs text-text-muted leading-relaxed mb-4">
-                    Skilled in capturing business needs, mapping operational flows (AS-IS/TO-BE), and producing BRD/FRD functional documents.
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Requirements Gathering", "AS-IS / TO-BE", "Functional Specs", "BRD / FRD", "BPMN 2.0 Flow", "Jira User Stories"].map((tag) => (
-                      <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
-                    ))}
-                  </div>
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:shadow-md transition-all">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center text-purple-900 dark:text-purple-200 mb-4 font-bold">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
                 </div>
-
-                {/* Box 2 */}
-                <div className="bg-card-bg border border-card-border p-6 rounded-2xl hover:border-indigo-500/20 transition-all glow-indigo">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-accent-primary mb-4">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                    </svg>
-                  </div>
-                  <h4 className="text-sm font-bold text-foreground mb-2">Data Analytics & Tools</h4>
-                  <p className="text-xs text-text-muted leading-relaxed mb-4">
-                    Writing Python scripts and SQL queries for data processing, building Power BI dashboards, and version controlling projects on GitHub.
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Python", "SQL Querying", "Power BI", "MS Excel", "GitHub", "Data Cleaning", "Relational Databases"].map((tag) => (
-                      <span
-                        key={tag}
-                        className={`text-[10px] font-semibold px-2 py-0.5 rounded border flex items-center gap-1.5 transition-all duration-305 ${tag === "GitHub"
-                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30"
-                            : "bg-bg-hover text-text-muted border-card-border"
-                          }`}
-                      >
-                        {tag === "GitHub" && (
-                          <svg className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Box 3 */}
-                <div className="bg-card-bg border border-card-border p-6 rounded-2xl hover:border-indigo-500/20 transition-all glow-indigo">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-accent-primary mb-4">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <h4 className="text-sm font-bold text-foreground mb-2">Quality & Process Compliance</h4>
-                  <p className="text-xs text-text-muted leading-relaxed mb-4">
-                    Leveraging QA document audit, HIPAA standard requirements, and database transaction tracking to enforce high-quality business records.
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Document Audit", "Process Quality", "HIPAA Standards", "Claim Verification", "BCA IT Foundation", "Scrum Basics"].map((tag) => (
-                      <span key={tag} className="text-[10px] font-semibold bg-bg-hover text-text-muted px-2 py-0.5 rounded border border-card-border">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Box 4 */}
-                <div className="bg-card-bg border border-card-border p-6 rounded-2xl hover:border-indigo-500/20 transition-all glow-indigo">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-accent-primary mb-4">
-                    <svg className="w-5 h-5 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="6" y1="3" x2="6" y2="15" />
-                      <circle cx="18" cy="6" r="3" />
-                      <circle cx="6" cy="18" r="3" />
-                      <path d="M18 9a9 9 0 0 1-9 9" />
-                    </svg>
-                  </div>
-                  <h4 className="text-sm font-bold text-foreground mb-2">Version Control & GitHub</h4>
-                  <p className="text-xs text-text-muted leading-relaxed mb-4">
-                    Managing source code updates, committing work, branching and merging modifications, and organizing code reviews in GitHub.
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {["Git Commands", "GitHub Workflow", "Pull Requests", "Code Commits", "Branching & Merging", "Collaboration"].map((tag) => (
-                      <span
-                        key={tag}
-                        className={`text-[9px] font-semibold px-2 py-0.5 rounded border flex items-center gap-1 transition-all duration-305 ${tag === "Git Commands" || tag === "GitHub Workflow"
-                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 animate-pulse"
-                            : "bg-bg-hover text-text-muted border-card-border"
-                          }`}
-                      >
-                        {(tag === "Git Commands" || tag === "GitHub Workflow") && (
-                          <svg className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                <h4 className="text-base font-black text-black dark:text-white mb-2">Analytics & Tools</h4>
+                <p className="text-xs text-black dark:text-slate-200 font-bold leading-relaxed mb-4">
+                  Writing Python scripts & SQL queries for data processing, building Power BI dashboards, and versioning on GitHub.
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Python", "SQL Querying", "Power BI", "Excel", "GitHub"].map((tag) => (
+                    <span key={tag} className="text-[10px] font-black bg-purple-100 dark:bg-purple-900/60 text-purple-950 dark:text-purple-200 px-2 py-0.5 rounded border border-purple-300 dark:border-purple-700">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
-            </section>
 
-            {/* SECTION 3: WORK EXPERIENCE */}
-            <section id="experience" className="space-y-6">
-              <div className="space-y-1.5">
-                <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Chronology</span>
-                <h3 className="text-2xl font-bold text-foreground">Work Experience</h3>
-                <p className="text-xs text-text-muted">Chronological summary of my roles delivering solutions across domains.</p>
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:shadow-md transition-all">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center text-purple-900 dark:text-purple-200 mb-4 font-bold">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </div>
+                <h4 className="text-base font-black text-black dark:text-white mb-2">Quality & Compliance</h4>
+                <p className="text-xs text-black dark:text-slate-200 font-bold leading-relaxed mb-4">
+                  QA document audit, HIPAA standard compliance, and database transaction tracking for high-quality records.
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Doc Audit", "Process Quality", "HIPAA", "Claim Validation"].map((tag) => (
+                    <span key={tag} className="text-[10px] font-black bg-purple-100 dark:bg-purple-900/60 text-purple-950 dark:text-purple-200 px-2 py-0.5 rounded border border-purple-300 dark:border-purple-700">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              <div className="relative border-l border-card-border pl-6 space-y-10 max-w-4xl">
-                {/* Experience Item 1 */}
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs hover:shadow-md transition-all">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-900/50 flex items-center justify-center text-purple-900 dark:text-purple-200 mb-4 font-bold">
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                </div>
+                <h4 className="text-base font-black text-black dark:text-white mb-2">Version Control</h4>
+                <p className="text-xs text-black dark:text-slate-200 font-bold leading-relaxed mb-4">
+                  Managing source code updates, committing modifications, branching & merging, and organizing code in GitHub.
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {["Git", "GitHub Flow", "Pull Requests", "Branching"].map((tag) => (
+                    <span key={tag} className="text-[10px] font-black bg-purple-100 dark:bg-purple-900/60 text-purple-950 dark:text-purple-200 px-2 py-0.5 rounded border border-purple-300 dark:border-purple-700">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Experience Timeline */}
+            <div className="space-y-6 pt-4">
+              <h3 className="text-xl font-black text-black dark:text-white">Work Experience Timeline</h3>
+              <div className="relative border-l-2 border-purple-300 dark:border-purple-700 pl-6 space-y-8">
+                {/* Item 1 */}
                 <div className="relative space-y-2">
-                  <span className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full bg-indigo-600 border-2 border-background flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                  </span>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                    <div>
-                      <h4 className="text-base font-bold text-foreground">Quality Analyst – Document Record Management</h4>
-                      <p className="text-xs text-text-muted font-bold uppercase tracking-wider">HTC Global Services | Full-time</p>
-                    </div>
-                    <span className="text-xs text-accent-primary font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20">
+                  <span className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-purple-600 border-4 border-background" />
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
+                    <h4 className="text-base font-black text-black dark:text-white">Quality Analyst – Document Record Management</h4>
+                    <span className="text-xs font-black text-purple-900 dark:text-purple-200 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950 border border-purple-300 dark:border-purple-800">
                       April 2025 – November 2025
                     </span>
                   </div>
-                  <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
-                    <p>
-                      <strong>Role Objective:</strong> Manage high-volume business and operational documents, conducting rigorous validation and quality audits prior to client delivery.
-                    </p>
-                    <ul className="list-disc pl-4 space-y-1 text-text-muted">
-                      <li>Verified production documents for accuracy, completeness, and full compliance with client specifications.</li>
-                      <li>Performed comprehensive quality assurance checks on business and operational documents before final delivery.</li>
-                      <li>Managed high-volume document validation workloads, consistently ensuring timely submission to clients.</li>
-                      <li>Maintained strict document quality standards, reducing production error rates through detailed verification processes.</li>
-                    </ul>
-                  </div>
+                  <p className="text-xs font-black text-purple-800 dark:text-purple-300 uppercase tracking-wider">HTC Global Services | Full-time</p>
+                  <ul className="list-disc pl-4 text-xs text-black dark:text-slate-200 font-bold space-y-1">
+                    <li>Verified production documents for accuracy, completeness, and full compliance with client specifications.</li>
+                    <li>Performed comprehensive quality assurance checks on business and operational documents before final delivery.</li>
+                    <li>Managed high-volume document validation workloads, consistently ensuring timely submission to clients.</li>
+                  </ul>
                 </div>
 
-                {/* Experience Item 2 */}
+                {/* Item 2 */}
                 <div className="relative space-y-2">
-                  <span className="absolute -left-[31px] top-1.5 w-4.5 h-4.5 rounded-full bg-slate-200 dark:bg-slate-800 border-2 border-background flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
-                  </span>
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                    <div>
-                      <h4 className="text-base font-bold text-foreground">Financial Transaction Analyst Intern</h4>
-                      <p className="text-xs text-text-muted font-bold uppercase tracking-wider">S10 Healthcare Solutions Pvt. Ltd | Internship</p>
-                    </div>
-                    <span className="text-xs text-text-muted font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-bg-hover border border-card-border">
+                  <span className="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-purple-400 border-4 border-background" />
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1">
+                    <h4 className="text-base font-black text-black dark:text-white">Financial Transaction Analyst Intern</h4>
+                    <span className="text-xs font-black text-black dark:text-slate-200 px-3 py-1 rounded-full bg-purple-100/70 dark:bg-purple-950/40 border border-purple-300 dark:border-purple-800">
                       July 2024 – December 2024
                     </span>
                   </div>
-                  <div className="text-xs text-foreground leading-relaxed space-y-2 mt-2">
-                    <p>
-                      <strong>Role Objective:</strong> Audit US healthcare patient accounts and verify insurance eligibility to minimize claims denial rates.
-                    </p>
-                    <ul className="list-disc pl-4 space-y-1 text-text-muted">
-                      <li>Reviewed and authorized patient demographic and insurance information for US healthcare clients, ensuring 100% compliance with HIPAA guidelines.</li>
-                      <li>Processed prior authorizations and verified insurance eligibility, improving transactional accuracy and reducing claim rejections.</li>
-                      <li>Maintained and updated patient records/documentation, ensuring timely retrieval for internal/external audits and operational reporting.</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* SECTION 4: CASE STUDIES */}
-            {/* <section id="case-studies" className="space-y-6">
-          <div className="space-y-1.5">
-            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Deep Dives</span>
-            <h3 className="text-2xl font-bold text-foreground">Case Studies</h3>
-            <p className="text-xs text-text-muted">Comprehensive walk-through of the end-to-end BA lifecycle for major corporate projects.</p>
-          </div>
-          <CaseStudyExplorer />
-        </section> */}
-
-            {/* SECTION 5: BPMN PROCESS MAPPING */}
-            <section id="bpmn-analysis" className="space-y-6">
-              <div className="space-y-1.5">
-                <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Modeling</span>
-                <h3 className="text-2xl font-bold text-foreground">Process Flow Gap Analysis</h3>
-                <p className="text-xs text-text-muted">Interactive workflow diagram showcasing operational re-engineering of manual dataset ingestion to Celery ETL automation.</p>
-              </div>
-              <BpmnViewer />
-            </section>
-
-            {/* SECTION 6: SAMPLE DELIVERABLES */}
-            {/* <section id="deliverables" className="space-y-6">
-          <div className="space-y-1.5">
-            <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Artifacts</span>
-            <h3 className="text-2xl font-bold text-foreground">Sample Deliverables Showcase</h3>
-            <p className="text-xs text-text-muted">High-fidelity mocks of functional requirements, scrum backlogs, and portal wireframes.</p>
-          </div>
-          <DeliverablesViewer />
-        </section> */}
-
-            {/* SECTION 7: DATA & BI SHOWCASE */}
-            <section id="data-showcase" className="space-y-10">
-              <div className="space-y-1.5">
-                <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Data Analysis</span>
-                <h3 className="text-2xl font-bold text-foreground">SQL Playground & BI Dashboard</h3>
-                <p className="text-xs text-text-muted">Demonstrating data elicitation, database querying, and dashboard design skills.</p>
-              </div>
-
-              <div className="space-y-8">
-                <InteractiveSqlSandbox />
-                <DashboardSimulator />
-              </div>
-            </section>
-
-            {/* SECTION 8: CERTIFICATIONS & EDUCATION */}
-            <section id="certifications" className="space-y-6">
-              <div className="space-y-1.5">
-                <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Credentials</span>
-                <h3 className="text-2xl font-bold text-foreground">Certifications & Education</h3>
-                <p className="text-xs text-text-muted">Professional credentials confirming expertise in BA methodologies and data analytics.</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl">
-                {/* Education 1 */}
-                <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
-                  <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-sm shrink-0">
-                    BCA
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Bachelor of Computer Application (BCA)</h4>
-                    <p className="text-[10px] text-text-muted font-semibold mt-0.5">AM Jain College | 2021 - 2024 | CGPA: 7.79</p>
-                  </div>
-                </div>
-
-                {/* Education 2 */}
-                <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
-                  <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-xs shrink-0">
-                    HSE
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Higher Secondary Education (HSE)</h4>
-                    <p className="text-[10px] text-text-muted font-semibold mt-0.5">Jaigopal Garodia Higher Secondary | 2020 - 2021 | Percentage: 86%</p>
-                  </div>
-                </div>
-
-                {/* Education 3 */}
-                <div className="flex gap-4 items-center bg-card-bg border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs">
-                  <div className="w-12 h-12 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-accent-primary font-black text-xs shrink-0">
-                    SSLC
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">Secondary School Leaving Certificate (SSLC)</h4>
-                    <p className="text-[10px] text-text-muted font-semibold mt-0.5">Shakespeare Matriculation School | 2019 | Percentage: 75%</p>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-
-
-            {/* SECTION 10: CONTACT */}
-            <section id="contact" className="space-y-6 pb-20">
-              <div className="space-y-1.5">
-                <span className="text-[10px] text-indigo-500 dark:text-indigo-400 font-bold uppercase tracking-widest">Send mail</span>
-                <h3 className="text-2xl font-bold text-foreground">Get in Touch</h3>
-                <p className="text-xs text-text-muted">Reach out for recruitment proposals, operational audits, or consulting opportunities.</p>
-              </div>
-              <ContactForm />
-            </section>
-
-            {/* Main Footer Section */}
-            <footer className="border-t border-card-border pt-12 mt-20 pb-0 transition-colors duration-300">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                {/* Column 1: Info */}
-                <div className="md:col-span-2 space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center font-black text-white text-base shadow-md">
-                      I
-                    </div>
-                    <h4 className="text-sm font-bold text-foreground">Indhu S | Data Professional</h4>
-                  </div>
-                  <p className="text-xs text-text-muted leading-relaxed max-w-sm">
-                    Gathering requirements, auditing operational records, and analyzing SQL databases and Power BI systems for operational clarity.
-                  </p>
-                </div>
-
-                {/* Column 2: Navigation Quick Links */}
-                <div className="space-y-3">
-                  <h5 className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Navigation</h5>
-                  <div className="grid grid-cols-2 gap-2 text-xs font-semibold">
-                    <a href="#summary" className="text-text-muted hover:text-foreground transition-colors">Summary</a>
-                    <a href="#competencies" className="text-text-muted hover:text-foreground transition-colors">Skills</a>
-                    <a href="#experience" className="text-text-muted hover:text-foreground transition-colors">Experience</a>
-                    <a href="#bpmn-analysis" className="text-text-muted hover:text-foreground transition-colors">BPMN Flow</a>
-                    <a href="#data-showcase" className="text-text-muted hover:text-foreground transition-colors">Analytics</a>
-                    <a href="#certifications" className="text-text-muted hover:text-foreground transition-colors">Certifications</a>
-                    <a href="#contact" className="text-text-muted hover:text-foreground transition-colors">Contact</a>
-                  </div>
-                </div>
-
-                {/* Column 3: Social/Contact Info */}
-                <div className="space-y-3">
-                  <h5 className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-widest">Connect</h5>
-                  <ul className="text-xs text-text-muted space-y-2 font-semibold">
-                    <li>
-                      <a href="mailto:indhusekar1609@gmail.com" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                        indhusekar1609@gmail.com
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://linkedin.com/in/indhu16" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                        linkedin.com/in/indhu16
-                      </a>
-                    </li>
-                    <li>
-                      <a href="https://github.com/indhusekar1609" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                        github.com/indhusekar1609
-                      </a>
-                    </li>
+                  <p className="text-xs font-black text-purple-800 dark:text-purple-300 uppercase tracking-wider">S10 Healthcare Solutions Pvt. Ltd | Internship</p>
+                  <ul className="list-disc pl-4 text-xs text-black dark:text-slate-200 font-bold space-y-1">
+                    <li>Reviewed and authorized patient demographic and insurance information for US healthcare clients with 100% HIPAA compliance.</li>
+                    <li>Processed prior authorizations and verified insurance eligibility, improving transactional accuracy.</li>
                   </ul>
                 </div>
               </div>
+            </div>
+          </section>
 
-              <div className="border-t border-card-border mt-12 pt-6 text-center text-[10px] text-text-muted font-bold uppercase tracking-wider">
-                © 2026 Indhu S Portfolio. All rights reserved.
-              </div>
-            </footer>
 
-            {/* Floating Mobile Bottom Navigation Dock */}
-            <div className={`fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] max-w-[480px] bg-sidebar-bg/90 border border-sidebar-border rounded-full p-2.5 flex justify-around items-center shadow-2xl backdrop-blur-md z-50 xl:hidden transition-all duration-500 ${loading ? "opacity-0 pointer-events-none" : "opacity-100 animate-fade-in"
-              }`}>
-              <a href="#summary" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                </svg>
-                <span>Home</span>
-              </a>
-              <a href="#experience" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span>Work</span>
-              </a>
-              <a href="#bpmn-analysis" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span>BPMN</span>
-              </a>
-              <a href="#data-showcase" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.003 9.003 0 1020.945 13H11V3.055z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
-                </svg>
-                <span>Data</span>
-              </a>
-              <a href="#contact" className="flex flex-col items-center gap-1 text-[10px] font-bold text-text-muted hover:text-accent-primary">
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 00-2 2z" />
-                </svg>
-                <span>Contact</span>
-              </a>
+          {/* ================= SECTION 3: PROJECTS & SHOWCASE ================= */}
+          <section id="projects" className="space-y-12">
+            <div className="space-y-2">
+              <span className="text-xs font-black text-purple-800 dark:text-purple-300 uppercase tracking-widest">
+                Interactive Showcase
+              </span>
+              <h2 className="text-3xl font-black text-black dark:text-white">
+                Projects & Data Analytics
+              </h2>
+              <p className="text-xs text-black dark:text-slate-200 font-bold">
+                Explore interactive SQL queries, Power BI dashboards, and BPMN process flow models.
+              </p>
             </div>
 
-          </main>
-        </div>
+            {/* Interactive SQL Sandbox */}
+            <InteractiveSqlSandbox />
+
+            {/* Power BI Dashboard Simulator */}
+            <DashboardSimulator />
+
+            {/* BPMN Process Flow Viewer */}
+            <div className="space-y-4">
+              <h3 className="text-xl font-black text-black dark:text-white">BPMN Process Flow Gap Analysis</h3>
+              <BpmnViewer />
+            </div>
+          </section>
+
+
+          {/* ================= SECTION 4: CERTIFICATIONS & EDUCATION ================= */}
+          <section id="certifications" className="space-y-8">
+            <div className="space-y-2">
+              <span className="text-xs font-black text-purple-800 dark:text-purple-300 uppercase tracking-widest">
+                Academic & Badges
+              </span>
+              <h2 className="text-3xl font-black text-black dark:text-white">
+                Certifications & Education
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-900 dark:text-purple-200 font-black text-sm flex items-center justify-center shrink-0 border border-purple-300 dark:border-purple-700">
+                  BCA
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-black dark:text-white">Bachelor of Computer Application</h4>
+                  <p className="text-xs text-black dark:text-slate-200 font-bold">AM Jain College | 2021 - 2024</p>
+                  <p className="text-xs font-black text-purple-800 dark:text-purple-300 mt-1">CGPA: 7.79</p>
+                </div>
+              </div>
+
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-900 dark:text-purple-200 font-black text-sm flex items-center justify-center shrink-0 border border-purple-300 dark:border-purple-700">
+                  HSE
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-black dark:text-white">Higher Secondary Education</h4>
+                  <p className="text-xs text-black dark:text-slate-200 font-bold">Jaigopal Garodia HSS | 2020 - 2021</p>
+                  <p className="text-xs font-black text-purple-800 dark:text-purple-300 mt-1">Score: 86%</p>
+                </div>
+              </div>
+
+              <div className="bg-card-bg p-6 rounded-2xl border border-card-border shadow-xs flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-900/50 text-purple-900 dark:text-purple-200 font-black text-sm flex items-center justify-center shrink-0 border border-purple-300 dark:border-purple-700">
+                  SSLC
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-black dark:text-white">Secondary School Certificate</h4>
+                  <p className="text-xs text-black dark:text-slate-200 font-bold">Shakespeare Matriculation | 2019</p>
+                  <p className="text-xs font-black text-purple-800 dark:text-purple-300 mt-1">Score: 75%</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+
+          {/* ================= SECTION 5: CONTACT ME ================= */}
+          <section id="contact" className="space-y-8 pb-12">
+            <div className="space-y-2">
+              <span className="text-xs font-black text-purple-800 dark:text-purple-300 uppercase tracking-widest">
+                Get In Touch
+              </span>
+              <h2 className="text-3xl font-black text-black dark:text-white">
+                Contact Me
+              </h2>
+              <p className="text-xs text-black dark:text-slate-200 font-bold">
+                Reach out for recruitment proposals, operational data audits, or analytics opportunities.
+              </p>
+            </div>
+
+            <ContactForm />
+
+            <div className="pt-6">
+              <TestimonialsCarousel />
+            </div>
+          </section>
+
+        </main>
+
+        {/* Full Width Footer */}
+        <footer className="w-full bg-[#f3edfc] dark:bg-[#14111d] border-t border-purple-200/80 dark:border-purple-900/40 py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="space-y-3">
+              <h4 className="text-lg font-black text-black dark:text-white">Indhumathi M</h4>
+              <p className="text-xs text-black dark:text-slate-200 leading-relaxed max-w-sm font-bold">
+                Data Analyst specialized in Power BI dashboards, SQL query optimization, Excel telemetry analysis, and quality compliance.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <h5 className="text-xs font-black uppercase tracking-wider text-purple-800 dark:text-purple-300">Navigation</h5>
+              <div className="grid grid-cols-2 gap-2 text-xs font-extrabold">
+                <a href="#home" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">Home</a>
+                <a href="#about" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">About Me</a>
+                <a href="#projects" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">Projects</a>
+                <a href="#certifications" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">Certification</a>
+                <a href="#contact" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">Contact Me</a>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <h5 className="text-xs font-black uppercase tracking-wider text-purple-800 dark:text-purple-300">Connect</h5>
+              <ul className="space-y-2 text-xs font-extrabold">
+                <li>
+                  <a href="mailto:indhusekar1609@gmail.com" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">
+                    indhusekar1609@gmail.com
+                  </a>
+                </li>
+                <li>
+                  <a href="https://linkedin.com/in/indhu16" target="_blank" rel="noopener noreferrer" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">
+                    linkedin.com/in/indhu16
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/indhusekar1609" target="_blank" rel="noopener noreferrer" className="text-black dark:text-slate-200 hover:text-purple-800 dark:hover:text-purple-300 transition-colors">
+                    github.com/indhusekar1609
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="max-w-7xl mx-auto border-t border-purple-200/80 dark:border-purple-900/40 mt-8 pt-6 text-center text-xs text-black dark:text-slate-300 font-extrabold">
+            © 2026 Indhumathi M. All rights reserved.
+          </div>
+        </footer>
       </div>
     </>
   );

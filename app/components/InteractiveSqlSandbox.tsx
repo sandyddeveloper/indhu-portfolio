@@ -115,15 +115,36 @@ export default function InteractiveSqlSandbox() {
                 setSelectedQuery(q);
                 setShowResults(false);
               }}
-              className={`px-3 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all ${
+              className={`px-3 py-2 rounded-xl text-xs font-black tracking-wide transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 selectedQuery.id === q.id
-                  ? "bg-indigo-600 text-white shadow-md"
-                  : "bg-bg-hover text-text-muted hover:text-foreground"
+                  ? "bg-purple-700 text-white shadow-md"
+                  : "bg-bg-hover text-black dark:text-slate-200 hover:text-purple-800"
               }`}
             >
-              {q.id === "customer_churn" && "📈 Segment Churn"}
-              {q.id === "claims_denials" && "💸 Claims Denial"}
-              {q.id === "safety_stock" && "📦 Inventory Risk"}
+              {q.id === "customer_churn" && (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  <span>Segment Churn</span>
+                </>
+              )}
+              {q.id === "claims_denials" && (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Claims Denial</span>
+                </>
+              )}
+              {q.id === "safety_stock" && (
+                <>
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                  </svg>
+                  <span>Inventory Risk</span>
+                </>
+              )}
             </button>
           ))}
         </div>
@@ -131,48 +152,48 @@ export default function InteractiveSqlSandbox() {
 
       {/* SQL Editor Layout */}
       <div className="grid grid-cols-1 xl:grid-cols-12">
-        {/* Editor Screen (Left) - Kept dark styled for code editor feel */}
-        <div className="xl:col-span-7 xl:border-r border-b xl:border-b-0 border-card-border bg-slate-950 flex flex-col justify-between transition-colors duration-300">
-          <div className="p-4 border-b border-slate-900 flex justify-between items-center text-[11px] text-slate-500 font-mono">
+        {/* Editor Screen (Left) - Light and Dark Mode adaptative */}
+        <div className="xl:col-span-7 xl:border-r border-b xl:border-b-0 border-card-border bg-[#faf9fc] dark:bg-slate-950 flex flex-col justify-between transition-colors duration-300">
+          <div className="p-4 border-b border-purple-200/60 dark:border-slate-800 bg-purple-100/50 dark:bg-slate-900 flex justify-between items-center text-[11px] font-mono">
             <span className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-              <span className="ml-2 text-slate-400 font-bold">query_analysis.sql</span>
+              <span className="ml-2 text-slate-800 dark:text-slate-200 font-bold">query_analysis.sql</span>
             </span>
-            <span>PostgreSQL 15</span>
+            <span className="text-purple-700 dark:text-purple-300 font-semibold">PostgreSQL 15</span>
           </div>
 
           {/* Code Window */}
-          <div className="p-5 font-mono text-[11px] md:text-xs text-slate-300 overflow-x-auto whitespace-pre leading-relaxed min-h-[220px] bg-slate-950">
+          <div className="p-5 font-mono text-[11px] md:text-xs text-slate-900 dark:text-slate-200 overflow-x-auto whitespace-pre leading-relaxed min-h-[220px] bg-[#faf9fc] dark:bg-slate-950">
             {selectedQuery.sql.split("\n").map((line, idx) => {
               const tokenRegex = /('[^']*')|(\b(?:SELECT|FROM|JOIN|ON|GROUP\s+BY|ORDER\s+BY|WHERE|AND|HAVING|OVER)\b)|(\b(?:SUM|AVG|COUNT|ROUND|DATEADD|CASE|WHEN|THEN|END|DISTINCT|AS|DESC)\b)|(\b\d+(?:\.\d+)?\b)/gi;
               let highlighted = line.replace(tokenRegex, (match, stringLiteral, keyword, func, num) => {
-                if (stringLiteral) return `<span class="text-emerald-400">${match}</span>`;
-                if (keyword) return `<span class="text-indigo-400 font-bold">${match}</span>`;
-                if (func) return `<span class="text-sky-400">${match}</span>`;
-                if (num) return `<span class="text-amber-400">${match}</span>`;
+                if (stringLiteral) return `<span class="text-emerald-700 dark:text-emerald-400 font-bold">${match}</span>`;
+                if (keyword) return `<span class="text-purple-800 dark:text-indigo-400 font-black">${match}</span>`;
+                if (func) return `<span class="text-blue-700 dark:text-sky-400 font-bold">${match}</span>`;
+                if (num) return `<span class="text-amber-700 dark:text-amber-400 font-bold">${match}</span>`;
                 return match;
               });
 
               return (
                 <div key={idx} className="table-row">
-                  <span className="table-cell text-slate-600 text-right pr-4 select-none w-6">{idx + 1}</span>
-                  <span className="table-cell" dangerouslySetInnerHTML={{ __html: highlighted }} />
+                  <span className="table-cell text-purple-400 dark:text-slate-600 font-bold text-right pr-4 select-none w-6">{idx + 1}</span>
+                  <span className="table-cell font-semibold" dangerouslySetInnerHTML={{ __html: highlighted }} />
                 </div>
               );
             })}
           </div>
 
           {/* Footer Trigger */}
-          <div className="p-4 border-t border-slate-900 bg-slate-950/80 flex justify-between items-center">
-            <div className="text-[10px] text-slate-500 italic max-w-[70%]">
+          <div className="p-4 border-t border-purple-200/60 dark:border-slate-800 bg-purple-100/50 dark:bg-slate-900/80 flex justify-between items-center">
+            <div className="text-[10px] text-slate-700 dark:text-slate-400 font-medium italic max-w-[70%]">
               {selectedQuery.description}
             </div>
             <button
               onClick={handleRunQuery}
               disabled={isRunning}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition-all shadow-md flex items-center gap-2 disabled:opacity-50 shrink-0 cursor-pointer"
+              className="bg-purple-600 hover:bg-purple-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white text-xs font-extrabold px-5 py-2.5 rounded-xl transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 shrink-0 cursor-pointer"
             >
               {isRunning ? (
                 <>
