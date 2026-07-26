@@ -7,10 +7,10 @@ export default function ToolLogos() {
         Data Analytics Tools Known
       </h3>
 
-      <div className="flex flex-wrap items-center justify-between gap-6 md:gap-8 lg:gap-12 py-4 px-2">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6 md:gap-8 lg:gap-10 py-4 px-1 items-center">
         {/* Python Logo */}
-        <div className="flex items-center gap-2.5 transition-all duration-300 hover:scale-105 cursor-pointer">
-          <svg className="w-9 h-9" viewBox="0 0 128 128">
+        <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+          <svg className="w-7 h-7 sm:w-9 sm:h-9 shrink-0" viewBox="0 0 128 128">
             <path
               fill="#3776AB"
               d="M62.6 0c-30.8 0-29 13.4-29 13.4l.1 13.8h29.5v4.2H21.7S0 29 0 60.5c0 31.6 18.9 30.5 18.9 30.5h11.3v-16s-.6-18.9 18.3-18.9h29.4s17.7.3 17.7-17.2V17.2S98.2 0 62.6 0zm-15.6 9.4c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5z"
@@ -20,8 +20,72 @@ export default function ToolLogos() {
               d="M65.4 128c30.8 0 29-13.4 29-13.4l-.1-13.8H64.8v-4.2h41.5s21.7 2.4 21.7-29.1c0-31.6-18.9-30.5-18.9-30.5h-11.3v16s.6 18.9-18.3 18.9H50.1s-17.7-.3-17.7 17.2v21.6S30 128 65.4 128zm15.6-9.4c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"
             />
           </svg>
-          <span className="text-xl font-extrabold tracking-tight text-foreground font-sans">
+          <span className="text-base sm:text-xl font-extrabold tracking-tight text-foreground font-sans">
             python<span className="text-xs align-top opacity-70">™</span>
+          </span>
+        </div>
+
+        {/* Django Logo */}
+        <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-[#092E20] flex items-center justify-center text-[#44B78B] font-black text-base sm:text-xl shadow-xs shrink-0">
+            d
+          </div>
+          <span className="text-lg sm:text-2xl font-extrabold tracking-tight text-[#092E20] dark:text-[#44B78B] font-sans">
+            django
+          </span>
+        </div>
+
+        {/* PostgreSQL Logo */}
+        <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+          <svg className="w-7 h-7 sm:w-9 sm:h-9 shrink-0" viewBox="0 0 128 128" fill="none">
+            <rect width="128" height="128" rx="24" fill="#336791" />
+            <path
+              fill="#FFFFFF"
+              d="M64 20C42 20 28 34 28 56c0 16 8 28 20 34v18l16-10 16 10V90c12-6 20-18 20-34 0-22-14-36-36-36zm-12 28c3 0 6 3 6 6s-3 6-6 6-6-3-6-6 3-6 6-6zm24 0c3 0 6 3 6 6s-3 6-6 6-6-3-6-6 3-6 6-6zm-12 32c-10 0-16-6-16-6s6 10 16 10 16-10 16-10-6 6-16 6z"
+            />
+          </svg>
+          <span className="text-sm sm:text-xl font-extrabold tracking-tight text-[#336791] dark:text-[#65b3e6] font-sans">
+            PostgreSQL
+          </span>
+        </div>
+
+        {/* ELT Logo */}
+        <div className="flex items-center gap-2 transition-all duration-300 hover:scale-105 cursor-pointer">
+          <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg bg-[#2E1065] flex items-center justify-center text-purple-300 font-black text-xs sm:text-sm shadow-xs shrink-0">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M4 12h16M14 6l6 6-6 6" />
+            </svg>
+          </div>
+          <span className="text-base sm:text-xl font-extrabold tracking-tight text-purple-900 dark:text-purple-300 font-sans">
+            ELT
+          </span>
+        </div>
+
+        {/* Pandas Logo */}
+        <div className="flex items-center gap-2.5 transition-all duration-300 hover:scale-105 cursor-pointer">
+          <svg className="w-9 h-9" viewBox="0 0 128 128" fill="none">
+            <rect width="128" height="128" rx="24" fill="#150E28" />
+            <rect x="36" y="28" width="12" height="72" rx="4" fill="#130754" />
+            <rect x="58" y="44" width="12" height="56" rx="4" fill="#3867D6" />
+            <rect x="80" y="28" width="12" height="72" rx="4" fill="#FFC048" />
+            <circle cx="42" cy="34" r="4" fill="#FF5252" />
+          </svg>
+          <span className="text-xl font-extrabold tracking-tight text-[#130754] dark:text-[#a5b4fc] font-sans">
+            pandas
+          </span>
+        </div>
+
+        {/* NumPy Logo */}
+        <div className="flex items-center gap-2.5 transition-all duration-300 hover:scale-105 cursor-pointer">
+          <svg className="w-9 h-9" viewBox="0 0 128 128" fill="none">
+            <rect width="128" height="128" rx="24" fill="#013243" />
+            <path d="M34 44L64 26L94 44V84L64 102L34 84V44Z" stroke="#4DABCF" strokeWidth="6" fill="none" />
+            <path d="M34 44L64 63L94 44" stroke="#4DABCF" strokeWidth="6" />
+            <path d="M64 63V102" stroke="#4DABCF" strokeWidth="6" />
+            <circle cx="64" cy="63" r="6" fill="#4DABCF" />
+          </svg>
+          <span className="text-xl font-extrabold tracking-tight text-[#013243] dark:text-[#4DABCF] font-sans">
+            NumPy
           </span>
         </div>
 
@@ -62,6 +126,23 @@ export default function ToolLogos() {
           </span>
         </div>
 
+        {/* Git Logo */}
+        <div className="flex items-center gap-2.5 transition-all duration-300 hover:scale-105 cursor-pointer">
+          <svg className="w-9 h-9" viewBox="0 0 128 128">
+            <path
+              fill="#F05032"
+              d="M124.7 57.5L70.5 3.3c-4.4-4.4-11.5-4.4-15.8 0L3.3 54.7c-4.4 4.4-4.4 11.5 0 15.8l54.2 54.2c4.4 4.4 11.5 4.4 15.8 0l51.4-51.4c4.4-4.4 4.4-11.5 0-15.8z"
+            />
+            <path
+              fill="#FFFFFF"
+              d="M93.3 64.9L64.2 35.8c-1.7-1.7-4.4-1.7-6.1 0L46.4 47.5c-1.3 1.3-1.6 3.1-1 4.7l13.6 13.6c-1.3 2.1-1.1 4.9.7 6.8 1.9 1.9 4.8 2.2 7 .9l9.7 9.7c-1.3 2.1-1.1 4.9.7 6.8 2.3 2.3 6.1 2.3 8.4 0 2.3-2.3 2.3-6.1 0-8.4-1.9-1.9-4.8-2.2-6.9-1L70 71.9c.7-1.3.6-2.9-.3-3.9-1.1-1.1-2.7-1.4-4.1-.9L52.8 54.3l9.4-9.4 25 25c1.7 1.7 4.4 1.7 6.1 0 1.7-1.7 1.7-4.4 0-6.1z"
+            />
+          </svg>
+          <span className="text-xl font-extrabold tracking-tight text-[#F05032] font-sans">
+            Git
+          </span>
+        </div>
+
         {/* Excel Logo */}
         <div className="flex items-center gap-2.5 transition-all duration-300 hover:scale-105 cursor-pointer">
           <div className="w-10 h-10 bg-[#107C41] rounded-lg flex items-center justify-center text-white font-black text-xl shadow-md">
@@ -71,22 +152,9 @@ export default function ToolLogos() {
             Excel
           </span>
         </div>
-
-        {/* Statistics Doodle Graphic */}
-        <div className="flex items-center gap-3 transition-all duration-300 hover:scale-105 cursor-pointer">
-          <svg className="w-12 h-10" viewBox="0 0 120 90" fill="none" stroke="currentColor">
-            <path d="M15,10 L15,75 L110,75" strokeWidth="3" strokeLinecap="round" />
-            <path d="M20,65 L45,45 L70,55 L105,18" stroke="#8A57D3" strokeWidth="4" strokeLinecap="round" />
-            <path d="M92,18 L105,18 L105,30" stroke="#8A57D3" strokeWidth="4" strokeLinecap="round" />
-            <rect x="25" y="50" width="10" height="24" fill="#E6DCF7" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="50" y="35" width="10" height="39" fill="#C8B6E2" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="75" y="25" width="10" height="49" fill="#8A57D3" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          <span className="text-xs font-black uppercase tracking-widest text-foreground font-sans border-b-2 border-purple-300 pb-0.5">
-            STATISTICS
-          </span>
-        </div>
       </div>
     </div>
   );
 }
+
+

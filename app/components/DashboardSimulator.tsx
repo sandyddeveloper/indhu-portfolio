@@ -6,14 +6,6 @@ import { useState, useMemo } from "react";
 type PeriodFilter = "30D" | "90D" | "YTD";
 type DeptFilter = "ALL" | "ELEC" | "APPS" | "HLIV";
 
-interface KPI {
-  title: string;
-  value: string;
-  change: string;
-  isPositive: boolean;
-  prefix?: string;
-}
-
 export default function DashboardSimulator() {
   const [period, setPeriod] = useState<PeriodFilter>("90D");
   const [dept, setDept] = useState<DeptFilter>("ALL");
@@ -50,25 +42,25 @@ export default function DashboardSimulator() {
       errorRate: claimErrorPct,
       kpis: [
         {
-          title: "Total Tracked Revenue",
+          title: "Total Revenue",
           value: `$${Math.round(baseRevenue).toLocaleString("en-US")}`,
           change: period === "30D" ? "+4.2%" : period === "90D" ? "+12.8%" : "+24.5%",
           isPositive: true
         },
         {
-          title: "Operations Leakage (Value)",
+          title: "Ops Leakage",
           value: `$${Math.round(leakageValue).toLocaleString("en-US")}`,
           change: period === "30D" ? "-1.5%" : period === "90D" ? "-8.4%" : "-15.2%",
-          isPositive: true // Leakage reduction is positive
+          isPositive: true
         },
         {
-          title: "Safety Stock Compliance",
+          title: "Stock Compliance",
           value: `${safetyStockPct.toFixed(1)}%`,
           change: "+1.9%",
           isPositive: true
         },
         {
-          title: "Process Error Rate",
+          title: "Process Error",
           value: `${claimErrorPct.toFixed(1)}%`,
           change: "-0.4%",
           isPositive: true
@@ -79,11 +71,7 @@ export default function DashboardSimulator() {
 
   // Render SVG charts
   const revenuePoints = useMemo(() => {
-    // Generate SVG path coordinates based on filters
-    const maxVal = Math.max(dashboardStats.revenue * 0.4, 1);
     const step = 60;
-    
-    // Vary coordinates slightly based on dept to animate path transitions
     let values = [40, 55, 45, 68, 62, 85, 75, 95];
     if (dept === "ELEC") values = [30, 48, 38, 55, 50, 72, 60, 85];
     if (dept === "APPS") values = [25, 35, 42, 38, 55, 48, 65, 70];
@@ -93,7 +81,7 @@ export default function DashboardSimulator() {
       x: idx * step + 40,
       y: 160 - (val / 100) * 120
     }));
-  }, [dept, dashboardStats.revenue]);
+  }, [dept]);
 
   const pathD = useMemo(() => {
     return revenuePoints.reduce((acc, p, idx) => {
@@ -109,23 +97,23 @@ export default function DashboardSimulator() {
   }, [pathD, revenuePoints]);
 
   return (
-    <div className="w-full bg-card-bg border border-card-border rounded-2xl overflow-hidden glow-indigo transition-all duration-300">
+    <div className="w-full bg-card-bg border border-card-border rounded-2xl overflow-hidden shadow-xs transition-all duration-300">
       {/* Dashboard Top Nav Controls */}
-      <div className="p-4 md:p-6 bg-sidebar-bg/60 border-b border-card-border flex flex-col xl:flex-row gap-4 justify-between items-start xl:items-center transition-colors duration-300">
+      <div className="p-3.5 sm:p-5 md:p-6 bg-sidebar-bg/60 border-b border-card-border flex flex-col xl:flex-row gap-3.5 sm:gap-4 justify-between items-start xl:items-center">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-indigo-650 dark:text-indigo-400">
+          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20 text-indigo-650 dark:text-indigo-400 shrink-0">
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
           <div>
-            <h4 className="text-sm font-bold text-foreground">Power BI Dashboard Mockup</h4>
-            <p className="text-xs text-text-muted">Retail Sales & Dynamic Safety Stock Telemetry</p>
+            <h4 className="text-xs sm:text-sm font-bold text-foreground">Power BI Executive Dashboard Simulator</h4>
+            <p className="text-[10px] sm:text-xs text-text-muted">Retail Sales & Dynamic Safety Stock Telemetry</p>
           </div>
         </div>
 
         {/* Filter controls */}
-        <div className="flex flex-col sm:flex-row flex-wrap gap-3 w-full sm:w-auto items-start sm:items-center">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-3 w-full sm:w-auto items-stretch sm:items-center">
           {/* Download Practice Dataset (Excel) */}
           <a
             href="/retail_sales_telemetry.xlsx"
@@ -136,15 +124,14 @@ export default function DashboardSimulator() {
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Download Practice Dataset (Excel)
+            <span>Download Practice Dataset (Excel)</span>
           </a>
 
-          {/* Department Filter */}
-          <div className="flex items-center justify-between sm:justify-start bg-background rounded-xl border border-card-border p-0.5 w-full sm:w-auto transition-colors duration-300">
-            <span className="text-[10px] text-text-muted font-bold px-2 uppercase shrink-0 hidden sm:inline">Category:</span>
+          {/* Department Filter (Scrollable on small mobile) */}
+          <div className="flex items-center gap-1 bg-background rounded-xl border border-card-border p-1 w-full sm:w-auto overflow-x-auto scrollbar-none">
             <button
               onClick={() => setDept("ALL")}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all shrink-0 ${
                 dept === "ALL" ? "bg-indigo-600 text-white" : "text-text-muted hover:text-foreground"
               }`}
             >
@@ -152,7 +139,7 @@ export default function DashboardSimulator() {
             </button>
             <button
               onClick={() => setDept("ELEC")}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all shrink-0 ${
                 dept === "ELEC" ? "bg-indigo-600 text-white" : "text-text-muted hover:text-foreground"
               }`}
             >
@@ -160,7 +147,7 @@ export default function DashboardSimulator() {
             </button>
             <button
               onClick={() => setDept("APPS")}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all shrink-0 ${
                 dept === "APPS" ? "bg-indigo-600 text-white" : "text-text-muted hover:text-foreground"
               }`}
             >
@@ -168,7 +155,7 @@ export default function DashboardSimulator() {
             </button>
             <button
               onClick={() => setDept("HLIV")}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+              className={`px-2.5 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all shrink-0 ${
                 dept === "HLIV" ? "bg-indigo-600 text-white" : "text-text-muted hover:text-foreground"
               }`}
             >
@@ -177,10 +164,10 @@ export default function DashboardSimulator() {
           </div>
 
           {/* Timeframe Filter */}
-          <div className="flex items-center justify-between sm:justify-start bg-background rounded-xl border border-card-border p-0.5 w-full sm:w-auto transition-colors duration-300">
+          <div className="flex items-center justify-center bg-background rounded-xl border border-card-border p-1 w-full sm:w-auto">
             <button
               onClick={() => setPeriod("30D")}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+              className={`flex-1 sm:flex-initial px-3 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all ${
                 period === "30D" ? "bg-indigo-600 text-white" : "text-text-muted hover:text-foreground"
               }`}
             >
@@ -188,7 +175,7 @@ export default function DashboardSimulator() {
             </button>
             <button
               onClick={() => setPeriod("90D")}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+              className={`flex-1 sm:flex-initial px-3 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all ${
                 period === "90D" ? "bg-indigo-600 text-white" : "text-text-muted hover:text-foreground"
               }`}
             >
@@ -196,7 +183,7 @@ export default function DashboardSimulator() {
             </button>
             <button
               onClick={() => setPeriod("YTD")}
-              className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all ${
+              className={`flex-1 sm:flex-initial px-3 py-1 rounded-lg text-[9px] sm:text-[10px] font-bold transition-all ${
                 period === "YTD" ? "bg-indigo-600 text-white" : "text-text-muted hover:text-foreground"
               }`}
             >
@@ -207,41 +194,41 @@ export default function DashboardSimulator() {
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="p-6 grid grid-cols-2 lg:grid-cols-4 gap-4 bg-card-bg/25 border-b border-card-border transition-colors duration-300">
+      <div className="p-3.5 sm:p-6 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 bg-card-bg/25 border-b border-card-border">
         {dashboardStats.kpis.map((kpi, idx) => (
           <div
             key={idx}
-            className="bg-background border border-card-border p-4 rounded-xl hover:border-indigo-500/20 transition-all group shadow-xs"
+            className="bg-background border border-card-border p-3 sm:p-4 rounded-xl hover:border-indigo-500/20 transition-all shadow-xs"
           >
-            <div className="text-[10px] text-text-muted font-bold uppercase tracking-wider">{kpi.title}</div>
-            <div className="text-xl md:text-2xl font-black text-foreground mt-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <div className="text-[9px] sm:text-[10px] text-text-muted font-bold uppercase tracking-wider truncate">{kpi.title}</div>
+            <div className="text-base sm:text-2xl font-black text-foreground mt-0.5 sm:mt-1 truncate">
               {kpi.value}
             </div>
-            <div className="flex items-center gap-1 mt-1 text-[10px] font-bold">
+            <div className="flex items-center gap-1 mt-1 text-[9px] sm:text-[10px] font-bold">
               <span className={kpi.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}>
                 {kpi.change}
               </span>
-              <span className="text-text-muted/60 font-medium">vs prev period</span>
+              <span className="text-text-muted/60 font-medium text-[8px] sm:text-[9px] truncate">vs prev</span>
             </div>
           </div>
         ))}
       </div>
 
       {/* Charts Panels */}
-      <div className="p-6 bg-card-bg/10 grid grid-cols-1 lg:grid-cols-12 gap-6 transition-colors duration-300">
+      <div className="p-3.5 sm:p-6 bg-card-bg/10 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         {/* Revenue Area Chart */}
-        <div className="lg:col-span-8 bg-background border border-card-border rounded-xl p-5 shadow-xs transition-colors duration-300">
-          <div className="flex justify-between items-center mb-4">
-            <h5 className="text-xs font-bold text-foreground uppercase tracking-wider">Revenue Trendline (YTD Intervals)</h5>
-            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
+        <div className="lg:col-span-8 bg-background border border-card-border rounded-xl p-3.5 sm:p-5 shadow-xs">
+          <div className="flex justify-between items-center mb-3">
+            <h5 className="text-[11px] sm:text-xs font-bold text-foreground uppercase tracking-wider">Revenue Trendline (YTD Intervals)</h5>
+            <span className="text-[9px] sm:text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
               Live Feed
             </span>
           </div>
 
-          <div className="relative h-[180px] w-full flex items-center justify-center">
+          <div className="relative h-[150px] sm:h-[180px] w-full flex items-center justify-center overflow-x-auto">
             {/* SVG Chart */}
-            <svg className="w-full h-full" viewBox="0 0 500 180" preserveAspectRatio="none">
+            <svg className="w-full h-full min-w-[300px]" viewBox="0 0 500 180" preserveAspectRatio="none">
               <defs>
                 <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25" />
@@ -272,7 +259,7 @@ export default function DashboardSimulator() {
               ))}
             </svg>
           </div>
-          <div className="flex justify-between text-[9px] text-text-muted font-bold uppercase tracking-wider px-6 mt-2">
+          <div className="flex justify-between text-[9px] text-text-muted font-bold uppercase tracking-wider px-2 sm:px-6 mt-2">
             <span>Jan</span>
             <span className="hidden sm:inline">Feb</span>
             <span>Mar</span>
@@ -285,15 +272,15 @@ export default function DashboardSimulator() {
         </div>
 
         {/* Safety Stock Breakdown (Bar-like representation) */}
-        <div className="lg:col-span-4 bg-background border border-card-border rounded-xl p-5 flex flex-col justify-between shadow-xs transition-colors duration-300">
+        <div className="lg:col-span-4 bg-background border border-card-border rounded-xl p-3.5 sm:p-5 flex flex-col justify-between shadow-xs">
           <div>
-            <h5 className="text-xs font-bold text-foreground uppercase tracking-wider mb-4">Stockouts & Lead Times</h5>
-            <div className="space-y-4">
+            <h5 className="text-[11px] sm:text-xs font-bold text-foreground uppercase tracking-wider mb-3">Stockouts & Lead Times</h5>
+            <div className="space-y-3 sm:space-y-4">
               {/* Item 1 */}
               <div className="space-y-1">
-                <div className="flex justify-between text-[10px] font-bold">
-                  <span className="text-text-muted">Denver Warehouse (Safety stock)</span>
-                  <span className="text-emerald-600 dark:text-emerald-400">98% Normal</span>
+                <div className="flex justify-between text-[10px] font-bold gap-2">
+                  <span className="text-text-muted truncate">Denver Warehouse</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 shrink-0">98% Normal</span>
                 </div>
                 <div className="h-1.5 w-full bg-bg-hover rounded-full overflow-hidden">
                   <div className="h-full bg-emerald-500 rounded-full" style={{ width: "98%" }} />
@@ -302,9 +289,9 @@ export default function DashboardSimulator() {
 
               {/* Item 2 */}
               <div className="space-y-1">
-                <div className="flex justify-between text-[10px] font-bold">
-                  <span className="text-text-muted">Seattle Import Hub (Lead delays)</span>
-                  <span className="text-amber-600 dark:text-amber-400">76% Warning</span>
+                <div className="flex justify-between text-[10px] font-bold gap-2">
+                  <span className="text-text-muted truncate">Seattle Import Hub</span>
+                  <span className="text-amber-600 dark:text-amber-400 shrink-0">76% Warning</span>
                 </div>
                 <div className="h-1.5 w-full bg-bg-hover rounded-full overflow-hidden">
                   <div className="h-full bg-amber-500 rounded-full" style={{ width: "76%" }} />
@@ -313,9 +300,9 @@ export default function DashboardSimulator() {
 
               {/* Item 3 */}
               <div className="space-y-1">
-                <div className="flex justify-between text-[10px] font-bold">
-                  <span className="text-text-muted">Chicago Depot (Critical low)</span>
-                  <span className="text-rose-600 dark:text-rose-400">42% Low stock</span>
+                <div className="flex justify-between text-[10px] font-bold gap-2">
+                  <span className="text-text-muted truncate">Chicago Depot</span>
+                  <span className="text-rose-600 dark:text-rose-400 shrink-0">42% Low stock</span>
                 </div>
                 <div className="h-1.5 w-full bg-bg-hover rounded-full overflow-hidden">
                   <div className="h-full bg-rose-500 rounded-full" style={{ width: "42%" }} />
@@ -324,7 +311,7 @@ export default function DashboardSimulator() {
             </div>
           </div>
 
-          <div className="bg-sidebar-bg/60 rounded-xl p-3 border border-card-border mt-4 text-[10px] text-text-muted leading-relaxed transition-colors duration-300">
+          <div className="bg-sidebar-bg/60 rounded-xl p-3 border border-card-border mt-4 text-[10px] text-text-muted leading-relaxed">
             <span className="text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider block mb-1">BA Commentary:</span>
             Refactoring Chicago reorder quantities based on supplier lead volatility is projected to recover <strong>$15,000/mo</strong> in lost sales.
           </div>

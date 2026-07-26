@@ -13,8 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Indhu S | Portfolio",
+  title: "Indhu S | Python & Data Specialist Portfolio",
   description: "Professional portfolio demonstrating expertise in Python, SQL, Excel, Power BI, requirements gathering, and data analysis.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   keywords: ["Data Professional", "Requirements Gathering", "Operational Documentation", "SQL Queries", "Power BI", "Python", "GitHub", "Data Analytics", "BCA"],
   authors: [{ name: "Indhu S" }],
 };
